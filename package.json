@@ -1,0 +1,21 @@
+{
+  "name": "com.drydock.clipfader",
+  "version": "1.0.0",
+  "displayName": "Clip Fader",
+  "description": "A tool to play and fade between animations.",
+  "unity": "2021.1",
+  "dependencies": {
+    "com.unity.playablegraph-visualizer": "0.2.1-preview.3"
+  },
+  "keywords": [
+    "clip",
+    "fade",
+    "fader",
+    "ghost"
+  ],
+  "author": {
+    "name": "Ian Sinclair",
+    "email": "ian.g.sinclair@gmail.com",
+    "url": ""
+  }
+}
