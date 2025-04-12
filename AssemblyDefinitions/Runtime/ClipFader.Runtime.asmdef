@@ -1,0 +1,17 @@
+{
+    "name": "ClipFader.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "GUID:d8e7b33ba1e4a89fc8a64b6b1e97a6ac",
+        "GUID:f06555f75b070af458a003d92f9efb00"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
