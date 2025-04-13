@@ -2,16 +2,16 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(GhostClipRunner))]
+[CustomEditor(typeof(DitherClipRunner))]
 public class GhostClipRunnerInspector : Editor
 {
-    private GhostClipRunner runner;
+    private DitherClipRunner runner;
     private GUIContent playFromStart;
     private const float buttonWidth = 24f;
 
     private void OnEnable()
     {
-        runner = (GhostClipRunner)target;
+        runner = (DitherClipRunner)target;
         playFromStart = EditorGUIUtility.IconContent("d_PlayButton");
     }
 

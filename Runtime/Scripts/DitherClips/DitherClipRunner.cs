@@ -6,9 +6,11 @@ using UnityEngine.Playables;
 using UnityEngine.Serialization;
 
 // [RequireComponent(typeof(Animator))]
-public class GhostClipRunner : MonoBehaviour
+public class DitherClipRunner : MonoBehaviour
 {
     [Header("DEBUG:")] public bool logDebug;
+
+    [Header("STATE:")] public DitherClipTransition currTransition;
     
     [Header("BLENDING:")]
     public float fadeOutStartTime = 1.5f;
@@ -16,6 +18,9 @@ public class GhostClipRunner : MonoBehaviour
     public float fadeInStartTime = 0.5f;
     public float fadeInDuration = 1f;
     public float blendDuration = 3f;
+
+    [Header("CLIPS:")]
+    [Expandable] public DitherClipTransition testTransition;
     
     [Header("FADING:")]
     [MinMaxRange(0f, 1f)]
@@ -39,8 +44,8 @@ public class GhostClipRunner : MonoBehaviour
     private float currBlendDuration = -1f;    
     //
 
-    [FormerlySerializedAs("fromHandle")] public GhostClipHandle fromClipHandle;
-    [FormerlySerializedAs("toHandle")] public GhostClipHandle toClipHandle;
+    public DitherClipHandle fromClipHandle;
+    public DitherClipHandle toClipHandle;
     
     private Animator fromAnimator;
     
@@ -73,8 +78,8 @@ public class GhostClipRunner : MonoBehaviour
         var toHandleClone = Instantiate(foundAnimator.gameObject, this.transform, true);
         // toHandleClone.transform.position += Vector3.right * 2f;
 
-        fromClipHandle = foundAnimator.gameObject.AddComponent<GhostClipHandle>();
-        toClipHandle = toHandleClone.gameObject.AddComponent<GhostClipHandle>();
+        fromClipHandle = foundAnimator.gameObject.AddComponent<DitherClipHandle>();
+        toClipHandle = toHandleClone.gameObject.AddComponent<DitherClipHandle>();
 
         fromClipHandle.gameObject.name = $"{handleName} - [FROM]";
         toClipHandle.gameObject.name = $"{handleName} - [TO]";
@@ -116,7 +121,7 @@ public class GhostClipRunner : MonoBehaviour
         GraphVisualizerClient.Show(graph);
 
         var ghost = Instantiate(gameObject);
-        var ghostHandler = ghost.GetComponent<GhostClipRunner>();
+        var ghostHandler = ghost.GetComponent<DitherClipRunner>();
         ghostHandler.isGhost = true;
         Destroy(ghostHandler);
     }
@@ -175,6 +180,14 @@ public class GhostClipRunner : MonoBehaviour
         Debug.LogWarning("TICK!");
     }
 
+    public void TransitionToDitherClip(DitherClipTransition transition)
+    {
+        currTransition = transition;
+        
+        // fromClipHandle.FadeFromClip(
+        //     transition.clip);
+    }
+    
     public void TransitionToClip(AnimationClip clip)
     {
         fromClipHandle.FadeFromClip(

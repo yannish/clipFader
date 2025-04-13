@@ -6,7 +6,7 @@ using UnityEngine.Playables;
 using UnityEngine.PlayerLoop;
 
 [RequireComponent(typeof(Animator))]
-public class GhostClipHandle : MonoBehaviour
+public class DitherClipHandle : MonoBehaviour
 {
     public bool logDebug;
     public Animator animator;
@@ -43,6 +43,7 @@ public class GhostClipHandle : MonoBehaviour
             return _matPropBlock;
         }
     }
+    
     
     public void Initialize()
     {
@@ -232,7 +233,6 @@ public class GhostClipHandle : MonoBehaviour
         mixer.SetInputWeight(0, 1f);
         mixer.SetInputWeight(1, 0f);
     }
-
 
     public void FadeFromClip(
         AnimationClip clip,

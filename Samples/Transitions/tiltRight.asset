@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 409d4e832c229ad42a389d3c17b43dfa, type: 3}
+  m_Name: tiltRight
+  m_EditorClassIdentifier: 
+  clip: {fileID: 7400000, guid: 50f5ec795fd58f34693af40d19a0bab5, type: 2}
+  config: {fileID: 11400000, guid: 5b0c5e5fd3b16654db8fb5a7127a8ad0, type: 2}

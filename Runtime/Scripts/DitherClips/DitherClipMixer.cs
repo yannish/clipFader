@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.Playables;
 
-public class GhostClipMixer : PlayableBehaviour
+
+public class DitherClipMixer : PlayableBehaviour
 {
     
 }

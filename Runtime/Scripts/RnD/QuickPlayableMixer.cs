@@ -15,9 +15,9 @@ public class QuickPlayableMixer : PlayableBehaviour
         
         Playable input = playable.GetInput(0);//.GetB;
         
-        if (input is QuickPlayable)
-        {
-            
-        }
+        // if (input is QuickPlayable)
+        // {
+        //     
+        // }
     }
 }

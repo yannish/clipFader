@@ -24,6 +24,9 @@ public class ScriptPlayableRunner : MonoBehaviour
     
     void Start()
     {
+        if (clip == null)
+            return;
+        
         // playableDirector.Play();
         
         // if (playableDirector != null)
@@ -65,6 +68,9 @@ public class ScriptPlayableRunner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!quickPlayableMixer.IsValid())
+            return;
+        
         quickPlayableMixer.SetInputWeight(0, blendWeight);
         quickPlayableMixer.SetInputWeight(1, 1f - blendWeight);
     }
