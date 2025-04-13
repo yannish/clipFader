@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 
 [CustomEditor(typeof(DitherClipRunner))]
-public class GhostClipRunnerInspector : Editor
+public class DitherClipRunnerInspector : Editor
 {
     private DitherClipRunner runner;
     private GUIContent playFromStart;
@@ -34,22 +34,22 @@ public class GhostClipRunnerInspector : Editor
         using (new GUILayout.VerticalScope(EditorStyles.helpBox))
         {
             EditorGUILayout.LabelField("CLIPS:", EditorStyles.boldLabel);
-            for (int i = 0; i < runner.clips.Count; i++)
+            for (int i = 0; i < runner.DitherClipTransitions.Count; i++)
             {
-                var clip = runner.clips[i];
-                if (clip == null)
+                var ditherClip = runner.DitherClipTransitions[i];
+                if (ditherClip == null)
                     continue;
                 
                 using (new GUILayout.HorizontalScope(EditorStyles.helpBox))
                 {
                     if (GUILayout.Button(playFromStart, GUILayout.Width(buttonWidth)))
                     {
-                        runner.TransitionToClip(clip);
+                        runner.TransitionToDitherClip(ditherClip);
                         
                         if(runner.logDebug)
-                            Debug.LogWarning($"Transitioning to: {clip.name} in {0f}");
+                            Debug.LogWarning($"Transitioning to: {ditherClip.name} in {0f}");
                     }
-                    EditorGUILayout.LabelField(clip.name);
+                    EditorGUILayout.LabelField(ditherClip.name);
                 }
             }
         }

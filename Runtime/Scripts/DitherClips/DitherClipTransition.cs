@@ -1,5 +1,6 @@
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -9,9 +10,10 @@ using UnityEditor.Presets;
 [CreateAssetMenu(fileName = "DitherClipTransition", menuName = "DitherClip/Transition")]
 public class DitherClipTransition : ScriptableObject
 {
-    public const string blabla = "blabla";
+    private const float DefaultTransitionDuration = 1.2f;
     
     public AnimationClip clip;
+    public float duration = DefaultTransitionDuration;
     [Expandable] public DitherClipTransitionConfig config;
 
     #if UNITY_EDITOR

@@ -10,7 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 409d4e832c229ad42a389d3c17b43dfa, type: 3}
-  m_Name: GhostClipTransition 1
+  m_Name: leftLeg
   m_EditorClassIdentifier: 
-  clip: {fileID: 0}
-  config: {fileID: 11400000, guid: 5b0c5e5fd3b16654db8fb5a7127a8ad0, type: 2}
+  clip: {fileID: 7400000, guid: ad7ecadf3edb5f54b9a6ec2734923116, type: 2}
+  duration: 1.2
+  config: {fileID: 11400000, guid: dec4526780f03764da40c9e28cd768ef, type: 2}

@@ -11,10 +11,12 @@ public class DitherClipHandle : MonoBehaviour
     public bool logDebug;
     public Animator animator;
     public string shaderPropName = "_Opacity";
+
+    // public DitherClipTransition currTransition;
     
     private Renderer[] renderers;
     
-    private PlayableGraph graph;
+    public PlayableGraph graph { get; private set; }
     private PlayableOutput playableOutput;
     private AnimationMixerPlayable mixer;
 
@@ -80,16 +82,8 @@ public class DitherClipHandle : MonoBehaviour
 
     public void SetHidden() => UpdateMaterialFade(0f);
 
-    public void UpdateMaterialFade(float fadeLevel)
-    {
-        MatPropBlock.SetFloat(shaderPropID, fadeLevel);
-        for (int i = 0; i < renderers.Length; i++)
-        {
-            renderers[i].SetPropertyBlock(MatPropBlock);
-        }
-    }
     
-    public void TickFadeToClipBlending()
+    public void TickFadeToClipBlending(DitherClipRunner runner)
     {
         if (currBlendTimer < 0f)
             return;
@@ -121,37 +115,39 @@ public class DitherClipHandle : MonoBehaviour
             currBlendDuration = -1f;
             
             SetHidden();
-
+            
             return;
         }
         
         var effectiveTime = currBlendDuration - currBlendTimer;
-        var normalizedTime = 1f - Mathf.Clamp01(currBlendTimer / currBlendDuration);
-        var fadeInLevel = GetFadeInLevel(effectiveTime);
-
-        var nextClipWeight = normalizedTime;
+        var normalizedTime = 1f - Mathf.Clamp01(currBlendTimer / runner.currTransition.duration);
         
-        mixer.SetInputWeight(0, 1f - nextClipWeight);
-        mixer.SetInputWeight(1, nextClipWeight);
+        var fadeInDither = runner.currTransition.config.fadeInDitherCurve.Evaluate(normalizedTime);
+        var fadeInWeight = runner.currTransition.config.fadeInWeightCurve.Evaluate(normalizedTime);
+        // var fadeInLevel = GetFadeInLevel(effectiveTime);
+        // var nextClipWeight = normalizedTime;
+        
+        mixer.SetInputWeight(0, 1f - fadeInWeight);
+        mixer.SetInputWeight(1, fadeInWeight);
         
         if(logDebug)
-            Debug.LogWarning($"effectiveTime : {effectiveTime}, fadeIn : {fadeInLevel}");
+            Debug.LogWarning($"effectiveTime : {effectiveTime}, fadeIn : {fadeInWeight}");
         
-        UpdateMaterialFade(fadeInLevel);
+        UpdateMaterialFade(fadeInDither);
 
-        float GetFadeInLevel(float time)
-        {
-            float invLerp = Mathf.InverseLerp(
-                currFadeInStartTime,
-                currFadeInStartTime + currFadeInDuration,
-                time
-            );
-        
-            return invLerp;
-        }
+        // float GetFadeInLevel(float time)
+        // {
+        //     float invLerp = Mathf.InverseLerp(
+        //         currFadeInStartTime,
+        //         currFadeInStartTime + currFadeInDuration,
+        //         time
+        //     );
+        //
+        //     return invLerp;
+        // }
     }
 
-    public void TickFadeFromClipBlending()
+    public void TickFadeFromClipBlending(DitherClipRunner runner)
     {
         if (currBlendTimer < 0f)
             return;
@@ -187,26 +183,76 @@ public class DitherClipHandle : MonoBehaviour
         
         var effectiveTime = currBlendDuration - currBlendTimer;
         var normalizedTime = 1f - Mathf.Clamp01(currBlendTimer / currBlendDuration);
-        var fadeOutLevel = GetFadeOutLevel(effectiveTime);
+        var fadeOutDither = runner.currTransition.config.fadeOutDitherCurve.Evaluate(normalizedTime);
+        var fadeOutWeight = runner.currTransition.config.fadeOutWeightCurve.Evaluate(normalizedTime);
         
-        UpdateMaterialFade(fadeOutLevel);
+        UpdateMaterialFade(fadeOutDither);
         
-        var nextClipWeight = normalizedTime;
+        mixer.SetInputWeight(0, fadeOutWeight);
+        mixer.SetInputWeight(1, 1f - fadeOutWeight);
         
-        mixer.SetInputWeight(0, 1f - nextClipWeight);
-        mixer.SetInputWeight(1, nextClipWeight);
-        
-        float GetFadeOutLevel(float time)
+        // float GetFadeOutLevel(float time)
+        // {
+        //     float invLerp = Mathf.InverseLerp(
+        //         currFadeOutStartTime,
+        //         currFadeOutStartTime + currFadeOutDuration,
+        //         time
+        //     );
+        //
+        //     return 1f - invLerp;
+        // }
+    }
+    
+    public void UpdateMaterialFade(float fadeLevel)
+    {
+        MatPropBlock.SetFloat(shaderPropID, fadeLevel);
+        for (int i = 0; i < renderers.Length; i++)
         {
-            float invLerp = Mathf.InverseLerp(
-                currFadeOutStartTime,
-                currFadeOutStartTime + currFadeOutDuration,
-                time
-            );
-        
-            return 1f - invLerp;
+            renderers[i].SetPropertyBlock(MatPropBlock);
         }
     }
+
+
+    public void FadeToClip(DitherClipTransition transition)
+    {
+        currBlendTimer = transition.duration;
+        currBlendDuration = transition.duration;
+        
+        nextClipPlayable = AnimationClipPlayable.Create(graph, transition.clip);
+        nextClipPlayable.SetDuration(transition.clip.length);
+        nextClipPlayable.SetTime(1f);
+        nextClipPlayable.Pause();
+        
+        mixer.ConnectInput(1, nextClipPlayable, 0);
+        
+        //... curved weight:
+        mixer.SetInputWeight(0, 1f);
+        mixer.SetInputWeight(1, 0f);
+        // mixer.SetInputWeight(0, transition.config.fadeInWeightCurve.Evaluate(0f));
+        // mixer.SetInputWeight(1, transition.config.fadeInWeightCurve.Evaluate(0f));
+    }
+    
+    public void FadeFromClip(DitherClipTransition transition)
+    {
+        currBlendTimer = transition.duration;
+        currBlendDuration = transition.duration;
+        
+        // we're fading FROM the current clip.
+        //.. next-clip should be run from the start.
+        nextClipPlayable = AnimationClipPlayable.Create(graph, transition.clip);
+        nextClipPlayable.SetDuration(transition.clip.length);
+        nextClipPlayable.SetTime(1f);
+        nextClipPlayable.Pause();
+        
+        mixer.ConnectInput(1, nextClipPlayable, 0);
+        
+        //... curved weight:
+        mixer.SetInputWeight(0, 1f);
+        mixer.SetInputWeight(1, 0f);
+        // mixer.SetInputWeight(0, transition.config.fadeOutWeightCurve.Evaluate(0f));
+        // mixer.SetInputWeight(1, transition.config.fadeOutWeightCurve.Evaluate(0f));
+    }
+    
     
     public void FadeToClip(
         AnimationClip clip,

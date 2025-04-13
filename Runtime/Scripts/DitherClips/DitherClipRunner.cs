@@ -5,47 +5,29 @@ using UnityEngine.Animations;
 using UnityEngine.Playables;
 using UnityEngine.Serialization;
 
-// [RequireComponent(typeof(Animator))]
 public class DitherClipRunner : MonoBehaviour
 {
     [Header("DEBUG:")] public bool logDebug;
 
     [Header("STATE:")] public DitherClipTransition currTransition;
     
-    [Header("BLENDING:")]
-    public float fadeOutStartTime = 1.5f;
-    public float fadeOutDuration = 1f;
-    public float fadeInStartTime = 0.5f;
-    public float fadeInDuration = 1f;
-    public float blendDuration = 3f;
-
-    [Header("CLIPS:")]
-    [Expandable] public DitherClipTransition testTransition;
+    [Header("CLIPS:")] public List<DitherClipTransition> DitherClipTransitions = new List<DitherClipTransition>();
     
-    [Header("FADING:")]
-    [MinMaxRange(0f, 1f)]
-    public MinMaxRange fadeOutRange = new MinMaxRange(0.15f, 0.3f);
-
-    [MinMaxRange(0f, 1f)]
-    public MinMaxRange fadeInRange = new MinMaxRange(0.7f, 0.85f);
-
-    // [MinMax]
-    // public Vector2 blendRange = new Vector2(0.2f, 0.2f);
+    // [Header("FADING:")]
+    // [MinMaxRange(0f, 1f)]
+    // public MinMaxRange fadeOutRange = new MinMaxRange(0.15f, 0.3f);
+    // [MinMaxRange(0f, 1f)]
+    // public MinMaxRange fadeInRange = new MinMaxRange(0.7f, 0.85f);
     
     [Header("CLIPS:")]
     public AnimationClip idleClip;
-    public List<AnimationClip> clips;
+    // public List<AnimationClip> clips;
     
     [Header("CONFIG:")]
     public DirectorUpdateMode updateMode = DirectorUpdateMode.GameTime;
-    public float blendTime = 1f;
 
-    private float currBlendTime = -1f; 
-    private float currBlendDuration = -1f;    
-    //
-
-    public DitherClipHandle fromClipHandle;
-    public DitherClipHandle toClipHandle;
+    private DitherClipHandle fromClipHandle;
+    private DitherClipHandle toClipHandle;
     
     private Animator fromAnimator;
     
@@ -57,6 +39,7 @@ public class DitherClipRunner : MonoBehaviour
     private AnimationClipPlayable nextClipPlayable;
 
     public bool isGhost;
+    
     
     void Start()
     {
@@ -76,7 +59,6 @@ public class DitherClipRunner : MonoBehaviour
         var handleName = foundAnimator.gameObject.name;
         
         var toHandleClone = Instantiate(foundAnimator.gameObject, this.transform, true);
-        // toHandleClone.transform.position += Vector3.right * 2f;
 
         fromClipHandle = foundAnimator.gameObject.AddComponent<DitherClipHandle>();
         toClipHandle = toHandleClone.gameObject.AddComponent<DitherClipHandle>();
@@ -128,53 +110,15 @@ public class DitherClipRunner : MonoBehaviour
     
     void Update()
     {
-        fromClipHandle.TickFadeFromClipBlending();
-        toClipHandle.TickFadeToClipBlending();
+        fromClipHandle.TickFadeFromClipBlending(this);
+        toClipHandle.TickFadeToClipBlending(this);
         
-        // TickBlending();        
+        // TickBlending();       
+        
         // if (Input.GetKeyDown(KeyCode.T))
         //     Tick();
     }
 
-    private void TickBlending()
-    {
-        if (currBlendTime < 0f)
-            return;
-        
-        currBlendTime -= Time.deltaTime;
-
-        if (currBlendTime < 0f)
-        {
-            /*
-             * - disconnect next clip
-             */
-            Debug.LogWarning("Done with blend.");
-            
-            mixer.DisconnectInput(0);
-            mixer.DisconnectInput(1);
-            
-            currClipPlayable = AnimationClipPlayable.Create(graph, nextClipPlayable.GetAnimationClip());
-            currClipPlayable.SetTime(1f);
-            
-            mixer.ConnectInput(0, currClipPlayable, 0);
-            
-            mixer.SetInputWeight(0, 1f);
-            mixer.SetInputWeight(1, 0f);
-            
-            mixer.DisconnectInput(1);
-            
-            currBlendTime = -1f;
-            currBlendDuration = -1f;
-
-            return;
-        }
-        
-        var blendWeight = Mathf.Clamp01(currBlendTime / currBlendDuration);
-        
-        mixer.SetInputWeight(0, blendWeight);
-        mixer.SetInputWeight(1, 1f - blendWeight);
-    }
-    
     private void Tick()
     {
         Debug.LogWarning("TICK!");
@@ -184,46 +128,10 @@ public class DitherClipRunner : MonoBehaviour
     {
         currTransition = transition;
         
-        // fromClipHandle.FadeFromClip(
-        //     transition.clip);
+        fromClipHandle.FadeFromClip(transition);
+        toClipHandle.FadeToClip(transition);
     }
     
-    public void TransitionToClip(AnimationClip clip)
-    {
-        fromClipHandle.FadeFromClip(
-            clip,
-            blendDuration,
-            fadeOutStartTime,
-            fadeOutDuration
-        );
-        
-        toClipHandle.FadeToClip(
-            clip,
-            blendDuration,
-            fadeInStartTime,
-            fadeInDuration
-            );
-    }
-    
-    public void PlayClip(AnimationClip clip)
-    {
-        if (clip == null) 
-            return;
-
-        currBlendDuration = blendTime;
-        currBlendTime = currBlendDuration;
-        
-        nextClipPlayable = AnimationClipPlayable.Create(graph, clip);
-        
-        nextClipPlayable.SetDuration(clip.length);
-        nextClipPlayable.SetTime(0f);
-        nextClipPlayable.Play();
-        
-        mixer.ConnectInput(1, nextClipPlayable, 0);
-        
-        // mixer.SetInputWeight(1, 0f);
-    }
-
     public void HandleAnimationEvent(AnimationEvent animationEvent)
     {
         

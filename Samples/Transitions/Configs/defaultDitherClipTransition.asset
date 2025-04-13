@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: adcb75a8ae7909d42b6f7eec30fdaa34, type: 3}
-  m_Name: DitherClipTransitionConfig
+  m_Name: defaultDitherClipTransition
   m_EditorClassIdentifier: 
   fadeOutWeightCurve:
     serializedVersion: 2
@@ -45,7 +45,7 @@ MonoBehaviour:
       inSlope: 0
       outSlope: 0
       tangentMode: 0
-      weightedMode: 0
+      weightedMode: 3
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
@@ -54,7 +54,7 @@ MonoBehaviour:
       inSlope: 0
       outSlope: 0
       tangentMode: 0
-      weightedMode: 0
+      weightedMode: 3
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
@@ -63,7 +63,7 @@ MonoBehaviour:
       inSlope: 0
       outSlope: 0
       tangentMode: 0
-      weightedMode: 0
+      weightedMode: 3
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
@@ -72,7 +72,7 @@ MonoBehaviour:
       inSlope: 0
       outSlope: 0
       tangentMode: 0
-      weightedMode: 0
+      weightedMode: 3
       inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
@@ -83,7 +83,7 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 0.7
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -111,7 +111,7 @@ MonoBehaviour:
       inSlope: 0
       outSlope: 0
       tangentMode: 0
-      weightedMode: 0
+      weightedMode: 3
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
@@ -120,7 +120,7 @@ MonoBehaviour:
       inSlope: 0
       outSlope: 0
       tangentMode: 0
-      weightedMode: 0
+      weightedMode: 3
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
@@ -129,7 +129,7 @@ MonoBehaviour:
       inSlope: 0
       outSlope: 0
       tangentMode: 0
-      weightedMode: 0
+      weightedMode: 3
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
@@ -138,7 +138,7 @@ MonoBehaviour:
       inSlope: 0
       outSlope: 0
       tangentMode: 0
-      weightedMode: 0
+      weightedMode: 3
       inWeight: 0
       outWeight: 0
     m_PreInfinity: 2

@@ -8,6 +8,9 @@ public class DitherClip : PlayableAsset
     
     public AnimationClip clip;
     
+    [Expandable]
+    public DitherClipTransitionConfig transitionConfig;
+    
     public override Playable CreatePlayable(PlayableGraph graph, GameObject owner)
     {
         var playable = ScriptPlayable<DitherClipBehaviour>.Create(graph);

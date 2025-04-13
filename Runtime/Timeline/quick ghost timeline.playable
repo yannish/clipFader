@@ -44,6 +44,22 @@ MonoBehaviour:
   m_Loop: 0
   m_Version: 1
   m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+--- !u!114 &-5369568150921841607
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15c38f6fa1940124db1ab7f6fe7268d1, type: 3}
+  m_Name: Signal Emitter
+  m_EditorClassIdentifier: 
+  m_Time: 1.9333333333333333
+  m_Retroactive: 0
+  m_EmitOnce: 0
+  m_Asset: {fileID: 0}
 --- !u!114 &-3701764208256455410
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -57,6 +73,7 @@ MonoBehaviour:
   m_Name: GhostClip
   m_EditorClassIdentifier: 
   clip: {fileID: 0}
+  transitionConfig: {fileID: 11400000, guid: dec4526780f03764da40c9e28cd768ef, type: 2}
 --- !u!114 &-3558787258051876635
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -200,98 +217,6 @@ MonoBehaviour:
   m_OpenClipOffsetRotation: {x: 0, y: 0, z: 0, w: 1}
   m_Rotation: {x: 0, y: 0, z: 0, w: 1}
   m_ApplyOffsets: 0
---- !u!114 &-2894088443409242186
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9094f55eb9c1ac344bd9d155f168b144, type: 3}
-  m_Name: Ghost Clip Track (2)
-  m_EditorClassIdentifier: 
-  m_Version: 3
-  m_AnimClip: {fileID: 0}
-  m_Locked: 0
-  m_Muted: 0
-  m_CustomPlayableFullTypename: 
-  m_Curves: {fileID: 0}
-  m_Parent: {fileID: 11400000}
-  m_Children: []
-  m_Clips:
-  - m_Version: 1
-    m_Start: 2.1333333333333333
-    m_ClipIn: 0
-    m_Asset: {fileID: 6431662884009031178}
-    m_Duration: 5
-    m_TimeScale: 1
-    m_ParentTrack: {fileID: -2894088443409242186}
-    m_EaseInDuration: 0
-    m_EaseOutDuration: 0
-    m_BlendInDuration: -1
-    m_BlendOutDuration: -1
-    m_MixInCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_MixOutCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_BlendInCurveMode: 0
-    m_BlendOutCurveMode: 0
-    m_ExposedParameterNames: []
-    m_AnimationCurves: {fileID: 0}
-    m_Recordable: 0
-    m_PostExtrapolationMode: 0
-    m_PreExtrapolationMode: 0
-    m_PostExtrapolationTime: 0
-    m_PreExtrapolationTime: 0
-    m_DisplayName: rotZ
-  m_Markers:
-    m_Objects: []
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -309,7 +234,6 @@ MonoBehaviour:
   - {fileID: 650270064574039621}
   - {fileID: 5574840884851104300}
   - {fileID: -3558787258051876635}
-  - {fileID: -2894088443409242186}
   m_FixedDuration: 0
   m_EditorSettings:
     m_Framerate: 60
@@ -361,7 +285,7 @@ MonoBehaviour:
   m_Children: []
   m_Clips:
   - m_Version: 1
-    m_Start: 0.8666666666666667
+    m_Start: 0
     m_ClipIn: 0
     m_Asset: {fileID: -3701764208256455410}
     m_Duration: 5
@@ -370,7 +294,7 @@ MonoBehaviour:
     m_EaseInDuration: 0
     m_EaseOutDuration: 0
     m_BlendInDuration: -1
-    m_BlendOutDuration: 2.083333333333334
+    m_BlendOutDuration: 1.8666666666666667
     m_MixInCurve:
       serializedVersion: 2
       m_Curve: []
@@ -379,7 +303,25 @@ MonoBehaviour:
       m_RotationOrder: 4
     m_MixOutCurve:
       serializedVersion: 2
-      m_Curve: []
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -394,7 +336,7 @@ MonoBehaviour:
     m_PreExtrapolationTime: 0
     m_DisplayName: GhostClip
   - m_Version: 1
-    m_Start: 3.783333333333333
+    m_Start: 3.1333333333333333
     m_ClipIn: 0
     m_Asset: {fileID: 7012259250855279330}
     m_Duration: 3.666666666666667
@@ -402,11 +344,29 @@ MonoBehaviour:
     m_ParentTrack: {fileID: 5574840884851104300}
     m_EaseInDuration: 0
     m_EaseOutDuration: 0
-    m_BlendInDuration: 2.083333333333334
+    m_BlendInDuration: 1.8666666666666667
     m_BlendOutDuration: -1
     m_MixInCurve:
       serializedVersion: 2
-      m_Curve: []
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -446,19 +406,6 @@ MonoBehaviour:
     m_DisplayName: GhostClip
   m_Markers:
     m_Objects: []
---- !u!114 &6431662884009031178
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3e8ddc6711831945bd716534915e9b2, type: 3}
-  m_Name: GhostClip
-  m_EditorClassIdentifier: 
-  clip: {fileID: 7400000, guid: 171bf2f1527b8d6499de8e0aeb369944, type: 2}
 --- !u!114 &7012259250855279330
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -472,3 +419,4 @@ MonoBehaviour:
   m_Name: GhostClip
   m_EditorClassIdentifier: 
   clip: {fileID: 0}
+  transitionConfig: {fileID: 0}
