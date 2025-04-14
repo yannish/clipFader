@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-6122584469023854423
+--- !u!114 &-6741344531257915612
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9,8 +9,34 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ae1e0d40f85fc1438d047e315d2699b, type: 3}
-  m_Name: Wrapped Clip Track
+  m_Script: {fileID: 11500000, guid: 34516eac248366943833c1c5c2d18428, type: 3}
+  m_Name: ProxyClip
+  m_EditorClassIdentifier: 
+  clip: {fileID: 7400000, guid: ed441bf951495a94b8764acaa6cc53ee, type: 2}
+--- !u!114 &-6597065274981748714
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34516eac248366943833c1c5c2d18428, type: 3}
+  m_Name: ProxyClip
+  m_EditorClassIdentifier: 
+  clip: {fileID: 7400000, guid: 171bf2f1527b8d6499de8e0aeb369944, type: 2}
+--- !u!114 &-5811082980679394145
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 573675960fdfd6645b9c0857c77fca39, type: 3}
+  m_Name: Proxy Clip Track
   m_EditorClassIdentifier: 
   m_Version: 3
   m_AnimClip: {fileID: 0}
@@ -24,14 +50,14 @@ MonoBehaviour:
   - m_Version: 1
     m_Start: 0
     m_ClipIn: 0
-    m_Asset: {fileID: 5911867566606853876}
+    m_Asset: {fileID: -6597065274981748714}
     m_Duration: 5
     m_TimeScale: 1
-    m_ParentTrack: {fileID: -6122584469023854423}
+    m_ParentTrack: {fileID: -5811082980679394145}
     m_EaseInDuration: 0
     m_EaseOutDuration: 0
     m_BlendInDuration: -1
-    m_BlendOutDuration: 1.4
+    m_BlendOutDuration: 1.4500000000000002
     m_MixInCurve:
       serializedVersion: 2
       m_Curve:
@@ -89,86 +115,17 @@ MonoBehaviour:
     m_PreExtrapolationMode: 0
     m_PostExtrapolationTime: 0
     m_PreExtrapolationTime: 0
-    m_DisplayName: WrappedClip
+    m_DisplayName: ProxyClip
   - m_Version: 1
-    m_Start: 3.6
+    m_Start: 3.55
     m_ClipIn: 0
-    m_Asset: {fileID: 6891349228276102811}
+    m_Asset: {fileID: -6741344531257915612}
     m_Duration: 5
     m_TimeScale: 1
-    m_ParentTrack: {fileID: -6122584469023854423}
+    m_ParentTrack: {fileID: -5811082980679394145}
     m_EaseInDuration: 0
     m_EaseOutDuration: 0
-    m_BlendInDuration: 1.4
-    m_BlendOutDuration: 1.0166666666666666
-    m_MixInCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_MixOutCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_BlendInCurveMode: 0
-    m_BlendOutCurveMode: 0
-    m_ExposedParameterNames: []
-    m_AnimationCurves: {fileID: 0}
-    m_Recordable: 0
-    m_PostExtrapolationMode: 0
-    m_PreExtrapolationMode: 0
-    m_PostExtrapolationTime: 0
-    m_PreExtrapolationTime: 0
-    m_DisplayName: WrappedClip
-  - m_Version: 1
-    m_Start: 7.583333333333333
-    m_ClipIn: 0
-    m_Asset: {fileID: -5222071900211060151}
-    m_Duration: 5
-    m_TimeScale: 1
-    m_ParentTrack: {fileID: -6122584469023854423}
-    m_EaseInDuration: 0
-    m_EaseOutDuration: 0
-    m_BlendInDuration: 1.0166666666666666
+    m_BlendInDuration: 1.4500000000000002
     m_BlendOutDuration: -1
     m_MixInCurve:
       serializedVersion: 2
@@ -227,7 +184,7 @@ MonoBehaviour:
     m_PreExtrapolationMode: 0
     m_PostExtrapolationTime: 0
     m_PreExtrapolationTime: 0
-    m_DisplayName: WrappedClip
+    m_DisplayName: ProxyClip
   m_Markers:
     m_Objects: []
 --- !u!114 &-5369568150921841607
@@ -246,19 +203,6 @@ MonoBehaviour:
   m_Retroactive: 0
   m_EmitOnce: 0
   m_Asset: {fileID: 0}
---- !u!114 &-5222071900211060151
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f43785daf3ca5d4dbc2cfadde8f9bf3, type: 3}
-  m_Name: WrappedClip
-  m_EditorClassIdentifier: 
-  clip: {fileID: 7400000, guid: 91e22bc653f310749a051c544cf0b8f3, type: 2}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -269,40 +213,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bfda56da833e2384a9677cd3c976a436, type: 3}
-  m_Name: quick ghost timeline
+  m_Name: proxy timeline
   m_EditorClassIdentifier: 
   m_Version: 0
   m_Tracks:
-  - {fileID: -6122584469023854423}
+  - {fileID: -5811082980679394145}
   m_FixedDuration: 0
   m_EditorSettings:
     m_Framerate: 60
     m_ScenePreview: 1
   m_DurationMode: 0
   m_MarkerTrack: {fileID: 0}
---- !u!114 &5911867566606853876
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f43785daf3ca5d4dbc2cfadde8f9bf3, type: 3}
-  m_Name: WrappedClip
-  m_EditorClassIdentifier: 
-  clip: {fileID: 7400000, guid: 171bf2f1527b8d6499de8e0aeb369944, type: 2}
---- !u!114 &6891349228276102811
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f43785daf3ca5d4dbc2cfadde8f9bf3, type: 3}
-  m_Name: WrappedClip
-  m_EditorClassIdentifier: 
-  clip: {fileID: 7400000, guid: ed441bf951495a94b8764acaa6cc53ee, type: 2}

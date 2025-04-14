@@ -11,15 +11,30 @@ public class WrappedClipTrack : TrackAsset
     {
         Debug.LogWarning($"WrappedClip track mixer created on go : {go.name}, inputCount : {inputCount}", go);
 
-        var mixer = AnimationMixerPlayable.Create(graph, inputCount);
-        var animator = go.GetComponent<Animator>();
-        var playableOutput = AnimationPlayableOutput.Create(graph, "Animation", animator);
-        playableOutput.SetSourcePlayable(mixer);
-        return mixer;
+        // var mixer = AnimationMixerPlayable.Create(graph, inputCount);
+        // var animator = go.GetComponent<Animator>();
+        // var playableOutput = AnimationPlayableOutput.Create(graph, "Animation", animator);
+        // playableOutput.SetSourcePlayable(mixer);
         
-        // var mixer = ScriptPlayable<WrappedClipMixer>.Create(graph, inputCount);
-        //
-        // var mixerBehaviour = mixer.GetBehaviour();
+        var scriptOutput = ScriptPlayableOutput.Create(graph, "Manual Script Output");
+        var scriptMixer = ScriptPlayable<WrappedClipMixer>.Create(graph, inputCount);
+        var scriptMixerBehaviouor = scriptMixer.GetBehaviour();
+        scriptMixerBehaviouor.animator = go.GetComponent<Animator>();
+        // for (int i = 0; i < inputCount; i++)
+        // {
+        //     Debug.LogWarning($"... connected wrappedClip {i} to its special mixer");
+        //     var playable = (ScriptPlayable<WrappedClipBehaviour>)scriptMixer.GetInput(i);
+        //     scriptMixer.ConnectInput(i, playable, 0);
+        // }
+        
+        // var mixerBehaviour = scriptMixer.GetBehaviour();
+        // var wrappedAnimator = animator.GetComponent<WrappedAnimator>();
+        // mixerBehaviour.wrappedAnimator = wrappedAnimator;
+        scriptOutput.SetSourcePlayable(scriptMixer);
+        
+        return scriptMixer;
+
+        
         // mixerBehaviour.animator = go.GetComponent<Animator>();
         // mixerBehaviour.playableOutput = AnimationPlayableOutput.Create(graph, "Animation", mixerBehaviour.animator);
         // mixerBehaviour.mixer = AnimationMixerPlayable.Create(graph, inputCount);

@@ -12,18 +12,19 @@ public class WrappedClip : PlayableAsset
         Debug.LogWarning("Created wrappedClipPlayable.");
         
         var playable = ScriptPlayable<WrappedClipBehaviour>.Create(graph, 1);
-        clipPlayable = AnimationClipPlayable.Create(graph, clip);
+        // clipPlayable = AnimationClipPlayable.Create(graph, clip);
         
         WrappedClipBehaviour wrappedClipBehaviour = playable.GetBehaviour();
         wrappedClipBehaviour.clip = clip;
         
-        playable.SetInputCount(1);
-        clipPlayable.SetInputCount(1);
+        // playable.SetInputCount(1);
+        // clipPlayable.SetInputCount(1);
         
         // graph.Connect(clipPlayable, 0, playable, 0);
         // playable.ConnectInput(0, clipPlayable, 0);
         // clipPlayable.ConnectInput(0, playable, 0);
-        
-        return clipPlayable;
+
+        // return clipPlayable;
+        return playable;
     }
 }
