@@ -13,7 +13,7 @@ public class ProxyClipMixer : PlayableBehaviour
         Debug.LogWarning($"Created proxy clip mixer w/ {inputCount} inputs");
         
         // for (int i = 0; i < inputCount; i++)
-        {
+        // {
             // var subPlayable = playable.GetInput(i);
             // proxyClipPlayables[i] = playable.GetInput(i);
         // }
