@@ -7,7 +7,7 @@ MonoImporter:
   - clip: {instanceID: 0}
   - config: {fileID: 11400000, guid: bcc76ae8a2ee5144a8237b35760cf6e5, type: 2}
   executionOrder: 0
-  icon: {instanceID: 0}
+  icon: {fileID: 2800000, guid: 70c40a90962e8be4f9e751dac7e7dd40, type: 3}
   userData: 
   assetBundleName: 
   assetBundleVariant: 

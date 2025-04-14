@@ -9,23 +9,25 @@ public class DitherClipRunner : MonoBehaviour
 {
     [Header("DEBUG:")] public bool logDebug;
 
-    [Header("STATE:")] public DitherClipTransition currTransition;
+    [Header("STATE:")] 
+    public DitherClipTransition currTransition;
+    public DitherClipTransition queuedTransition;
     
-    [Header("CLIPS:")] public List<DitherClipTransition> DitherClipTransitions = new List<DitherClipTransition>();
-    
-    // [Header("FADING:")]
-    // [MinMaxRange(0f, 1f)]
-    // public MinMaxRange fadeOutRange = new MinMaxRange(0.15f, 0.3f);
-    // [MinMaxRange(0f, 1f)]
-    // public MinMaxRange fadeInRange = new MinMaxRange(0.7f, 0.85f);
-    
-    [Header("CLIPS:")]
+    [Header("CLIPS:")] 
     public AnimationClip idleClip;
-    // public List<AnimationClip> clips;
+    public List<DitherClipTransition> DitherClipTransitions = new List<DitherClipTransition>();
     
     [Header("CONFIG:")]
     public DirectorUpdateMode updateMode = DirectorUpdateMode.GameTime;
 
+    [Header("MATERIALS:")]
+    public string shaderPropName = "_Opacity";
+
+
+    public float currBlendTimer;
+    public float currBlendDuration;
+    
+    
     private DitherClipHandle fromClipHandle;
     private DitherClipHandle toClipHandle;
     
@@ -38,7 +40,7 @@ public class DitherClipRunner : MonoBehaviour
     private AnimationClipPlayable currClipPlayable;
     private AnimationClipPlayable nextClipPlayable;
 
-    public bool isGhost;
+    [HideInInspector] public bool isGhost { get; set; }
     
     
     void Start()
@@ -66,14 +68,17 @@ public class DitherClipRunner : MonoBehaviour
         fromClipHandle.gameObject.name = $"{handleName} - [FROM]";
         toClipHandle.gameObject.name = $"{handleName} - [TO]";
         
-        fromClipHandle.Initialize();
-        toClipHandle.Initialize();
+        fromClipHandle.Initialize(this);
+        toClipHandle.Initialize(this);
         
         fromClipHandle.SetInitialClip(idleClip);
         fromClipHandle.SetVisible();
         
         toClipHandle.SetInitialClip(idleClip);
         toClipHandle.SetHidden();
+
+        currBlendTimer = -1f;
+        currBlendDuration = -1f;
     }
 
     void InitializeGraphs()
@@ -105,18 +110,39 @@ public class DitherClipRunner : MonoBehaviour
         var ghost = Instantiate(gameObject);
         var ghostHandler = ghost.GetComponent<DitherClipRunner>();
         ghostHandler.isGhost = true;
+        
         Destroy(ghostHandler);
     }
     
     void Update()
     {
+        if (currBlendTimer < 0f)
+            return;
+        
+        currBlendTimer -= Time.deltaTime;
+
+        if (currBlendTimer <= 0f)
+        {
+            //... wrap up...
+            fromClipHandle.FinishFadeFromClipBlending(this);
+            toClipHandle.FinishFadeToClipBlending(this);
+            
+            currBlendTimer = -1f;
+            currBlendDuration = -1f;
+            
+            currTransition = null;
+            
+            if (queuedTransition != null)
+            {
+                TransitionToDitherClip(queuedTransition);
+                queuedTransition = null;
+            }
+
+            return;
+        }
+        
         fromClipHandle.TickFadeFromClipBlending(this);
         toClipHandle.TickFadeToClipBlending(this);
-        
-        // TickBlending();       
-        
-        // if (Input.GetKeyDown(KeyCode.T))
-        //     Tick();
     }
 
     private void Tick()
@@ -126,16 +152,30 @@ public class DitherClipRunner : MonoBehaviour
 
     public void TransitionToDitherClip(DitherClipTransition transition)
     {
+        if (transition == currTransition)
+            return;
+        
+        if (currTransition != null)
+        {
+            // if (queuedTransition != transition)
+            // {
+            //     
+            // }
+            
+            Debug.LogWarning("already transitioning, queueing next instead.");
+            queuedTransition = transition;
+            return;
+        }
+        
         currTransition = transition;
+        currBlendTimer = transition.duration;
+        currBlendDuration = transition.duration;
         
         fromClipHandle.FadeFromClip(transition);
         toClipHandle.FadeToClip(transition);
     }
     
-    public void HandleAnimationEvent(AnimationEvent animationEvent)
-    {
-        
-    }
+    public void HandleAnimationEvent(AnimationEvent animationEvent){}
 
     private void OnDestroy()
     {

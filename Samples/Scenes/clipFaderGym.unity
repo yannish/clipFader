@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 47803273}
   - component: {fileID: 47803274}
   m_Layer: 0
-  m_Name: ghostClipRunner
+  m_Name: ditherClipRunner - christopher
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -166,12 +166,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   logDebug: 0
   currTransition: {fileID: 0}
+  queuedTransition: {fileID: 0}
+  idleClip: {fileID: 0}
   DitherClipTransitions:
   - {fileID: 11400000, guid: 16bfec19957b7574f84569125902c14d, type: 2}
   - {fileID: 11400000, guid: 527b5d14aa4291340abdf7d0f8e7543f, type: 2}
-  idleClip: {fileID: 0}
   updateMode: 1
-  isGhost: 0
+  shaderPropName: _Opacity
+  currBlendTimer: 0
+  currBlendDuration: 0
 --- !u!1 &295051746
 GameObject:
   m_ObjectHideFlags: 0
@@ -388,12 +391,12 @@ GameObject:
   - component: {fileID: 348171325}
   - component: {fileID: 348171324}
   m_Layer: 0
-  m_Name: ghostClipRunner
+  m_Name: ditherClipRunner - cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &348171324
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -408,12 +411,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   logDebug: 0
   currTransition: {fileID: 0}
+  queuedTransition: {fileID: 0}
+  idleClip: {fileID: 7400000, guid: 50f5ec795fd58f34693af40d19a0bab5, type: 2}
   DitherClipTransitions:
   - {fileID: 11400000, guid: be9637922f721fb4ab8e9fe081abd060, type: 2}
   - {fileID: 11400000, guid: 27aa095a563461d47a6697c14051e30b, type: 2}
-  idleClip: {fileID: 7400000, guid: 50f5ec795fd58f34693af40d19a0bab5, type: 2}
   updateMode: 1
-  isGhost: 0
+  shaderPropName: _Opacity
+  currBlendTimer: 0
+  currBlendDuration: 0
 --- !u!4 &348171325
 Transform:
   m_ObjectHideFlags: 0
@@ -927,6 +933,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: scrubCube
       objectReference: {fileID: 0}
+    - target: {fileID: 1292860634391308199, guid: 606a84b73d4d1a9449d9294b693d6487, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2925912294365293714, guid: 606a84b73d4d1a9449d9294b693d6487, type: 3}
       propertyPath: m_LocalPosition.x
       value: 5.1228666
@@ -1051,6 +1061,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: scrubCube proxy
       objectReference: {fileID: 0}
+    - target: {fileID: 1292860634391308199, guid: 606a84b73d4d1a9449d9294b693d6487, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2925912294365293714, guid: 606a84b73d4d1a9449d9294b693d6487, type: 3}
       propertyPath: m_LocalPosition.x
       value: 9.475796
@@ -1065,7 +1079,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2925912294365293714, guid: 606a84b73d4d1a9449d9294b693d6487, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9977737
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2925912294365293714, guid: 606a84b73d4d1a9449d9294b693d6487, type: 3}
       propertyPath: m_LocalRotation.x
@@ -1077,7 +1091,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2925912294365293714, guid: 606a84b73d4d1a9449d9294b693d6487, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.06669122
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2925912294365293714, guid: 606a84b73d4d1a9449d9294b693d6487, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
