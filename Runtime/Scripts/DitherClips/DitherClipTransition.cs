@@ -7,7 +7,7 @@ using UnityEditor;
 using UnityEditor.Presets;
 #endif
 
-[CreateAssetMenu(fileName = "DitherClipTransition", menuName = "DitherClip/Transition")]
+[CreateAssetMenu(fileName = "DitherClipTransition", menuName = "DitherClips/Transition")]
 public class DitherClipTransition : ScriptableObject
 {
     private const float DefaultTransitionDuration = 1.2f;

@@ -194,8 +194,8 @@ public class DitherClipHandle : MonoBehaviour
         float fadeInDuration
         )
     {
-        currFadeInStartTime = fadeInStartTime;
-        currFadeInDuration = fadeInDuration;
+        // currFadeInStartTime = fadeInStartTime;
+        // currFadeInDuration = fadeInDuration;
         
         // we're fading TO next clip.
         //.. next clip should be set part-way complete
@@ -217,8 +217,8 @@ public class DitherClipHandle : MonoBehaviour
         float fadeOutDuration
         )
     {
-        currFadeOutStartTime = fadeOutStartTime;
-        currFadeOutDuration = fadeOutDuration;
+        // currFadeOutStartTime = fadeOutStartTime;
+        // currFadeOutDuration = fadeOutDuration;
         
         // we're fading FROM the current clip.
         //.. next-clip should be run from the start.

@@ -14,7 +14,7 @@ public class DitherClipBehaviour : PlayableBehaviour
         if (ditherClipHandle == null)
             return;
         
-        ditherClipHandle.timelineFloat = (float) playable.GetTime();
-        ditherClipHandle.frameData = info.weight;
+        // ditherClipHandle.timelineFloat = (float) playable.GetTime();
+        // ditherClipHandle.frameData = info.weight;
     }
 }
