@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.Presets;
 
-public class DitherClipAssetProcessor : AssetModificationProcessor
+public class DitherClipAssetProcessor// : AssetModificationProcessor
 {
     private static void OnWillCreateAsset(string path)
     {
