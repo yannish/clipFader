@@ -1,6 +1,6 @@
+using System;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -16,7 +16,15 @@ public class DitherClipTransition : ScriptableObject
     public float duration = DefaultTransitionDuration;
     [Expandable] public DitherClipTransitionConfig config;
 
-    #if UNITY_EDITOR
+    private void OnValidate()
+    {
+        Debug.LogWarning("Validate on DitherClipTransition");
+        #if UNITY_EDITOR
+        // DitherClipPicker.RefreshDitherClipMasterlist();
+        #endif
+    }
+
+#if UNITY_EDITOR
     [MenuItem("Tools/Check for preset")]
     public static void CheckForPreset()
     {

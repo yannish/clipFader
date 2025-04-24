@@ -8,7 +8,6 @@ public class DitherClipCreationUtil
     [MenuItem("Assets/AnimationClip => DitherClip", true)]
     static bool ValidateDitherClipMenu()
     {
-        bool selectedOnlyAnimationClips = true;
         var selectedAnimationClips = Selection.GetFiltered(typeof(AnimationClip), SelectionMode.Assets);
         if (selectedAnimationClips.Length == 0)
             return false;

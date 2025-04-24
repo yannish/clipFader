@@ -53,5 +53,47 @@ public class DitherClipRunnerInspector : Editor
                 }
             }
         }
+        
+        using (new GUILayout.VerticalScope(EditorStyles.helpBox))
+        {
+            EditorGUILayout.LabelField("YARN CALLS:", EditorStyles.boldLabel);
+            for (int i = 0; i < runner.DitherClipYarnCalls.Count; i++)
+            {
+                var yarnCall = runner.DitherClipYarnCalls[i];
+                if (yarnCall == null)
+                    continue;
+
+                if (yarnCall.clipName == "")
+                    continue;
+
+                if (!DitherClipPicker.clipLookup.TryGetValue(yarnCall.clipName, out var clip))
+                    continue;
+
+                DitherClipTransitionConfig curves = null;
+                if(DitherClipPicker.curveLookup.TryGetValue(yarnCall.curveName, out var value))
+                    curves = value;
+                
+                using (new GUILayout.HorizontalScope(EditorStyles.helpBox))
+                {
+                    if (GUILayout.Button(playFromStart, GUILayout.Width(buttonWidth)))
+                    {
+                        if (yarnCall.transitionDuration > 0f)
+                        {
+                            runner.CrossFade(clip, yarnCall.transitionDuration, curves);
+                        }
+                        else
+                        {
+                            runner.CrossFade(clip, curves: curves);
+                        }
+
+                        if(runner.logDebug)
+                            Debug.LogWarning($"Transitioning to: {clip.name}");
+                    }
+                    EditorGUILayout.LabelField(clip.name);
+                }
+            }
+        }
+        
+        EditorGUILayout.Space();
     }
 }

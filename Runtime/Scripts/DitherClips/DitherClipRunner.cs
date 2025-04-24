@@ -7,6 +7,8 @@ using UnityEngine.Serialization;
 
 public class DitherClipRunner : MonoBehaviour
 {
+    private const float defaultTransitionDuration = 1.2f;
+    
     [Header("DEBUG:")] public bool logDebug;
 
     [Header("STATE:")] 
@@ -19,6 +21,9 @@ public class DitherClipRunner : MonoBehaviour
     
     [Header("CONFIG:")]
     public DirectorUpdateMode updateMode = DirectorUpdateMode.GameTime;
+    
+    [Header("YARN:")]
+    public List<DitherClipYarnCall> DitherClipYarnCalls = new List<DitherClipYarnCall>();
 
     [Header("MATERIALS:")]
     public string shaderPropName = "_Opacity";
@@ -28,8 +33,8 @@ public class DitherClipRunner : MonoBehaviour
     public float currBlendDuration;
     
     
-    private DitherClipHandle fromClipHandle;
-    private DitherClipHandle toClipHandle;
+    public DitherClipHandle fromClipHandle;
+    public DitherClipHandle toClipHandle;
     
     private Animator fromAnimator;
     
@@ -80,39 +85,6 @@ public class DitherClipRunner : MonoBehaviour
         currBlendTimer = -1f;
         currBlendDuration = -1f;
     }
-
-    void InitializeGraphs()
-    {
-        fromAnimator = GetComponent<Animator>();
-        fromAnimator.runtimeAnimatorController = null;
-        
-        graph = PlayableGraph.Create($"{this.gameObject.name} - Graph");
-        graph.SetTimeUpdateMode(updateMode);
-        
-        playableOutput = AnimationPlayableOutput.Create(graph, "Animation", fromAnimator);
-        mixer = AnimationMixerPlayable.Create(graph, 2);
-        
-        playableOutput.SetSourcePlayable(mixer);
-        
-        currClipPlayable = AnimationClipPlayable.Create(graph, idleClip);
-        currClipPlayable.SetTime(0f);
-        currClipPlayable.Play();
-        
-        mixer.ConnectInput(0, currClipPlayable, 0);
-        
-        mixer.SetInputWeight(0, 1f);
-        mixer.SetInputWeight(1, 0f);
-        
-        graph.Play();
-        
-        GraphVisualizerClient.Show(graph);
-
-        var ghost = Instantiate(gameObject);
-        var ghostHandler = ghost.GetComponent<DitherClipRunner>();
-        ghostHandler.isGhost = true;
-        
-        Destroy(ghostHandler);
-    }
     
     void Update()
     {
@@ -121,7 +93,10 @@ public class DitherClipRunner : MonoBehaviour
         
         currBlendTimer -= Time.deltaTime;
 
-        if (currBlendTimer <= 0f)
+        if (
+            (currClip != null || currTransition != null )
+            && currBlendTimer <= 0f
+            )
         {
             //... wrap up...
             fromClipHandle.FinishFadeFromClipBlending(this);
@@ -129,27 +104,83 @@ public class DitherClipRunner : MonoBehaviour
             
             currBlendTimer = -1f;
             currBlendDuration = -1f;
-            
+
+            currClip = null;
             currTransition = null;
+            overrideCurves = null;
             
-            if (queuedTransition != null)
+            if (queuedClip != null)
             {
-                TransitionToDitherClip(queuedTransition);
-                queuedTransition = null;
+                float transitionTime = defaultTransitionDuration;
+                if(queuedTransitionDuration > 0f)
+                    transitionTime = queuedTransitionDuration;
+
+                DitherClipTransitionConfig transitionConfig = defaultCurves;
+                if(queuedTransitionConfig != null)
+                    transitionConfig = queuedTransitionConfig;
+                
+                CrossFade(queuedClip, transitionTime, transitionConfig);
+
+                queuedTransitionDuration = -1f;
+                queuedClip = null;
+                queuedTransitionConfig = null;
             }
+            
+            // if (queuedTransition != null)
+            // {
+            //     TransitionToDitherClip(queuedTransition);
+            //     queuedTransition = null;
+            // }
 
             return;
         }
         
-        fromClipHandle.TickFadeFromClipBlending(this);
-        toClipHandle.TickFadeToClipBlending(this);
+        // fromClipHandle.TickFadeFromClipBlending(this);
+        // toClipHandle.TickFadeToClipBlending(this);
+        
+        fromClipHandle.TickFadeFromClipBlending_NEW(this);
+        toClipHandle.TickFadeToClipBlending_NEW(this);
     }
 
-    private void Tick()
+
+    [Header("TEMP:")]
+    public AnimationClip currClip;
+    public DitherClipTransitionConfig defaultCurves;
+    public DitherClipTransitionConfig overrideCurves;
+    
+    public AnimationClip queuedClip;
+    public float queuedTransitionDuration;
+    public DitherClipTransitionConfig queuedTransitionConfig;
+    
+    public void CrossFade(
+        AnimationClip clip, 
+        float duration = defaultTransitionDuration,
+        DitherClipTransitionConfig curves = null
+        )
     {
-        Debug.LogWarning("TICK!");
-    }
+        if (clip == currClip)
+            return;
 
+        if(curves != null)
+            overrideCurves = curves;
+        
+        if (currClip != null)
+        {
+            Debug.LogWarning("already transitioning, queuing next instead.");
+            queuedClip = clip;
+            queuedTransitionDuration = duration;
+            queuedTransitionConfig = curves;
+            return;
+        }
+
+        currClip = clip;
+        currBlendTimer = duration;
+        currBlendDuration = duration;
+        
+        fromClipHandle.FadeFromClip_NEW(clip);
+        toClipHandle.FadeToClip_NEW(clip);
+    }
+    
     public void TransitionToDitherClip(DitherClipTransition transition)
     {
         if (transition == currTransition)
@@ -182,4 +213,38 @@ public class DitherClipRunner : MonoBehaviour
         if(graph.IsValid())
             graph.Destroy();
     }
+    
+    
+    // void InitializeGraphs()
+    // {
+    //     fromAnimator = GetComponent<Animator>();
+    //     fromAnimator.runtimeAnimatorController = null;
+    //     
+    //     graph = PlayableGraph.Create($"{this.gameObject.name} - Graph");
+    //     graph.SetTimeUpdateMode(updateMode);
+    //     
+    //     playableOutput = AnimationPlayableOutput.Create(graph, "Animation", fromAnimator);
+    //     mixer = AnimationMixerPlayable.Create(graph, 2);
+    //     
+    //     playableOutput.SetSourcePlayable(mixer);
+    //     
+    //     currClipPlayable = AnimationClipPlayable.Create(graph, idleClip);
+    //     currClipPlayable.SetTime(0f);
+    //     currClipPlayable.Play();
+    //     
+    //     mixer.ConnectInput(0, currClipPlayable, 0);
+    //     
+    //     mixer.SetInputWeight(0, 1f);
+    //     mixer.SetInputWeight(1, 0f);
+    //     
+    //     graph.Play();
+    //     
+    //     GraphVisualizerClient.Show(graph);
+    //
+    //     var ghost = Instantiate(gameObject);
+    //     var ghostHandler = ghost.GetComponent<DitherClipRunner>();
+    //     ghostHandler.isGhost = true;
+    //     
+    //     Destroy(ghostHandler);
+    // }
 }

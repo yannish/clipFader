@@ -1,2 +1,19 @@
 fileFormatVersion: 2
 guid: dd3b79d555b447d4e9a968cca6a02072
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - currTransition: {instanceID: 0}
+  - queuedTransition: {instanceID: 0}
+  - idleClip: {instanceID: 0}
+  - currClip: {instanceID: 0}
+  - defaultCurves: {fileID: 11400000, guid: 3e9dfa6a6cb23f9439d577d180d54926, type: 2}
+  - overrideCurves: {instanceID: 0}
+  - queuedClip: {instanceID: 0}
+  - queuedTransitionConfig: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
