@@ -14,8 +14,9 @@ public static class DitherClipPicker
     public static DitherClipCurveCollection allDitherClipCurves;
     
     public static DitherClipDurationCollection allDitherClipDurations;
-    
-    
+
+
+    private const string ditherLabelName = "dither";
     
     private const string folderName = "DitherClips";
 
@@ -109,7 +110,7 @@ public static class DitherClipPicker
     [InitializeOnLoadMethod]
     public static void RefreshDitherClipMasterlist()
     {
-        Debug.LogWarning("Refreshing dither clip masterlist.");
+        // Debug.LogWarning("Refreshing dither clip masterlist.");
         
         var masterList = ScriptableObject.CreateInstance<DitherClipCollection>();
 
@@ -137,7 +138,7 @@ public static class DitherClipPicker
     [InitializeOnLoadMethod]
     public static void RefreshDitherClipCurvesMasterList()
     {
-        Debug.LogWarning("Creating dither clip curves masterlist.");
+        // Debug.LogWarning("Creating dither clip curves masterlist.");
         
         var masterList = ScriptableObject.CreateInstance<DitherClipCurveCollection>();
 
@@ -165,12 +166,12 @@ public static class DitherClipPicker
     [InitializeOnLoadMethod]
     public static void RefreshDitherClipDurationMasterList()
     {
-        Debug.LogWarning("Creating dither clip durations masterlist.");
+        // Debug.LogWarning("Creating dither clip durations masterlist.");
         
         var masterList = ScriptableObject.CreateInstance<DitherClipDurationCollection>();
 
-        var allDitherClipsGUIDs = AssetDatabase.FindAssets("t: FloatVariable l: DitherClipDuration");
-        Debug.LogWarning($"found {allDitherClipsGUIDs.Length} durations.");
+        var allDitherClipsGUIDs = AssetDatabase.FindAssets($"t: FloatVariable l: {ditherLabelName}");
+        // Debug.LogWarning($"found {allDitherClipsGUIDs.Length} durations.");
         foreach (var guid in allDitherClipsGUIDs)
         {
             var path = AssetDatabase.GUIDToAssetPath(guid);
