@@ -165,28 +165,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   logDebug: 0
-  currTransition: {fileID: 0}
-  queuedTransition: {fileID: 0}
+  currBlendTimer: 0
+  currBlendDuration: 0
   idleClip: {fileID: 0}
-  DitherClipTransitions:
+  idleAdditiveClip: {fileID: 0}
+  defaultCurves: {fileID: 0}
+  ditherClipCollection: {fileID: 0}
+  ditherCurvesCollection: {fileID: 0}
+  DitherClips:
   - {fileID: 11400000, guid: 16bfec19957b7574f84569125902c14d, type: 2}
   - {fileID: 11400000, guid: 527b5d14aa4291340abdf7d0f8e7543f, type: 2}
   - {fileID: 11400000, guid: d0217dfe03f76f74eadacf5d4529e05d, type: 2}
   - {fileID: 11400000, guid: cfe6eca45ed4e3547adf2d5f8694f49f, type: 2}
   - {fileID: 11400000, guid: feb6aac59277d80478616e839113cf0a, type: 2}
-  updateMode: 1
   DitherClipYarnCalls: []
   shaderPropName: _Opacity
-  currBlendTimer: 0
-  currBlendDuration: 0
-  fromClipHandle: {fileID: 0}
-  toClipHandle: {fileID: 0}
-  currClip: {fileID: 0}
-  defaultCurves: {fileID: 0}
-  overrideCurves: {fileID: 0}
-  queuedClip: {fileID: 0}
-  queuedTransitionDuration: 0
-  queuedTransitionConfig: {fileID: 0}
 --- !u!1 &295051746
 GameObject:
   m_ObjectHideFlags: 0
@@ -422,25 +415,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   logDebug: 0
-  currTransition: {fileID: 0}
-  queuedTransition: {fileID: 0}
-  idleClip: {fileID: 7400000, guid: 50f5ec795fd58f34693af40d19a0bab5, type: 2}
-  DitherClipTransitions:
-  - {fileID: 11400000, guid: be9637922f721fb4ab8e9fe081abd060, type: 2}
-  - {fileID: 11400000, guid: 27aa095a563461d47a6697c14051e30b, type: 2}
-  updateMode: 1
-  DitherClipYarnCalls: []
-  shaderPropName: _Opacity
   currBlendTimer: 0
   currBlendDuration: 0
-  fromClipHandle: {fileID: 0}
-  toClipHandle: {fileID: 0}
-  currClip: {fileID: 0}
+  idleClip: {fileID: 7400000, guid: 50f5ec795fd58f34693af40d19a0bab5, type: 2}
+  idleAdditiveClip: {fileID: 0}
   defaultCurves: {fileID: 0}
-  overrideCurves: {fileID: 0}
-  queuedClip: {fileID: 0}
-  queuedTransitionDuration: 0
-  queuedTransitionConfig: {fileID: 0}
+  ditherClipCollection: {fileID: 0}
+  ditherCurvesCollection: {fileID: 0}
+  DitherClips:
+  - {fileID: 11400000, guid: be9637922f721fb4ab8e9fe081abd060, type: 2}
+  - {fileID: 11400000, guid: 27aa095a563461d47a6697c14051e30b, type: 2}
+  DitherClipYarnCalls: []
+  shaderPropName: _Opacity
 --- !u!4 &348171325
 Transform:
   m_ObjectHideFlags: 0
@@ -958,35 +944,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   logDebug: 0
-  currTransition: {fileID: 0}
-  queuedTransition: {fileID: 0}
+  currBlendTimer: 0
+  currBlendDuration: 0
   idleClip: {fileID: 7400000, guid: 0b0bc8e68414db243a7ad5bf4472da42, type: 2}
-  DitherClipTransitions:
+  idleAdditiveClip: {fileID: 11400000, guid: b2818a8e5a0bb6d48945590bb0428180, type: 2}
+  defaultCurves: {fileID: 11400000, guid: 3e9dfa6a6cb23f9439d577d180d54926, type: 2}
+  ditherClipCollection: {fileID: 11400000, guid: 07aa2e724be1997429c7994038dfaea9, type: 2}
+  ditherCurvesCollection: {fileID: 0}
+  DitherClips:
   - {fileID: 11400000, guid: feb6aac59277d80478616e839113cf0a, type: 2}
   - {fileID: 11400000, guid: cfe6eca45ed4e3547adf2d5f8694f49f, type: 2}
   - {fileID: 11400000, guid: d0217dfe03f76f74eadacf5d4529e05d, type: 2}
-  updateMode: 1
   DitherClipYarnCalls:
   - clipName: lookAtAnnie
+    durationName: default
     transitionDuration: 0
-    curveName: 
+    curveName: gentlerDitherTransition
   - clipName: lookAtOwl
+    durationName: quick
     transitionDuration: 0
     curveName: 
   - clipName: thinking
+    durationName: slow
     transitionDuration: 0
     curveName: 
   shaderPropName: _Opacity
-  currBlendTimer: 0
-  currBlendDuration: 0
-  fromClipHandle: {fileID: 0}
-  toClipHandle: {fileID: 0}
-  currClip: {fileID: 0}
-  defaultCurves: {fileID: 11400000, guid: 3e9dfa6a6cb23f9439d577d180d54926, type: 2}
-  overrideCurves: {fileID: 0}
-  queuedClip: {fileID: 0}
-  queuedTransitionDuration: 0
-  queuedTransitionConfig: {fileID: 0}
 --- !u!1001 &1322049478
 PrefabInstance:
   m_ObjectHideFlags: 0

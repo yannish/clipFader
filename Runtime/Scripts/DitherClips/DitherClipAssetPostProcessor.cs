@@ -13,5 +13,6 @@ public class DitherClipAssetPostProcessor : AssetPostprocessor
         Debug.LogWarning("Post processing assets.");
         DitherClipPicker.RefreshDitherClipMasterlist();
         DitherClipPicker.RefreshDitherClipCurvesMasterList();
+        DitherClipPicker.RefreshDitherClipDurationMasterList();
     }
 }

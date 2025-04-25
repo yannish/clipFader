@@ -3,7 +3,7 @@ using UnityEngine.Playables;
 using UnityEngine.Timeline;
 
 [TrackBindingType(typeof(DitherClipHandle))]
-[TrackClipType(typeof(DitherClip))]
+[TrackClipType(typeof(DitherClipPlayableAsset))]
 public class DitherClipTrack : TrackAsset //
 {
     public override Playable CreateTrackMixer(PlayableGraph graph, GameObject go, int inputCount)

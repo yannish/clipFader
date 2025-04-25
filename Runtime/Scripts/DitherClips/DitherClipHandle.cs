@@ -15,10 +15,14 @@ public class DitherClipHandle : MonoBehaviour
     
     public PlayableGraph graph { get; private set; }
     private PlayableOutput playableOutput;
+    
     private AnimationMixerPlayable mixer;
+    private AnimationLayerMixerPlayable layerMixer;
 
     private AnimationClipPlayable currClipPlayable;
     private AnimationClipPlayable nextClipPlayable;
+    
+    private AnimationClipPlayable idleAdditiveClipPlayable;
 
     private MaterialPropertyBlock _matPropBlock;
     private int shaderPropID;
@@ -43,10 +47,28 @@ public class DitherClipHandle : MonoBehaviour
         
         graph = PlayableGraph.Create($"{gameObject.name} - Graph");
         graph.SetTimeUpdateMode(DirectorUpdateMode.GameTime);
+        
         playableOutput = AnimationPlayableOutput.Create(graph, "Animation", animator);
+        layerMixer = AnimationLayerMixerPlayable.Create(graph, 2);
         mixer = AnimationMixerPlayable.Create(graph, 2);
-        playableOutput.SetSourcePlayable(mixer);
-        mixer.SetInputCount(2);
+        
+        layerMixer.ConnectInput(0, mixer, 0);
+        layerMixer.SetLayerAdditive(1, true);
+        
+        playableOutput.SetSourcePlayable(layerMixer);
+
+        if (runner.idleAdditiveClip != null)
+        {
+            idleAdditiveClipPlayable = AnimationClipPlayable.Create(graph, runner.idleAdditiveClip.clip);
+            if(runner.idleAdditiveClip.startTime > 0f)
+                idleAdditiveClipPlayable.SetTime(runner.idleAdditiveClip.startTime);
+            layerMixer.ConnectInput(1, idleAdditiveClipPlayable, 0);
+            idleAdditiveClipPlayable.Play();
+        }
+        
+        layerMixer.SetInputWeight(0, 1f);
+        layerMixer.SetInputWeight(1, 1f);
+        
         graph.Play();
 
         renderers = GetComponentsInChildren<Renderer>();
@@ -97,10 +119,10 @@ public class DitherClipHandle : MonoBehaviour
     public void TickFadeToClipBlending(DitherClipRunner runner)
     {
         var effectiveTime = runner.currBlendDuration - runner.currBlendTimer;
-        var normalizedTime = 1f - Mathf.Clamp01(runner.currBlendTimer / runner.currTransition.duration);
+        var normalizedTime = 1f - Mathf.Clamp01(runner.currBlendTimer / runner.currDitherClip.duration);
         
-        var fadeInDither = runner.currTransition.config.fadeInDitherCurve.Evaluate(normalizedTime);
-        var fadeInWeight = runner.currTransition.config.fadeInWeightCurve.Evaluate(normalizedTime);
+        var fadeInDither = runner.currDitherClip.config.fadeInDitherCurve.Evaluate(normalizedTime);
+        var fadeInWeight = runner.currDitherClip.config.fadeInWeightCurve.Evaluate(normalizedTime);
 
         mixer.SetInputWeight(0, 1f - fadeInWeight);
         mixer.SetInputWeight(1, fadeInWeight);
@@ -158,8 +180,8 @@ public class DitherClipHandle : MonoBehaviour
     {
         var effectiveTime = runner.currBlendDuration - runner.currBlendTimer;
         var normalizedTime = 1f - Mathf.Clamp01(runner.currBlendTimer / runner.currBlendDuration);
-        var fadeOutDither = runner.currTransition.config.fadeOutDitherCurve.Evaluate(normalizedTime);
-        var fadeOutWeight = runner.currTransition.config.fadeOutWeightCurve.Evaluate(normalizedTime);
+        var fadeOutDither = runner.currDitherClip.config.fadeOutDitherCurve.Evaluate(normalizedTime);
+        var fadeOutWeight = runner.currDitherClip.config.fadeOutWeightCurve.Evaluate(normalizedTime);
         
         UpdateMaterialFade(fadeOutDither);
         
@@ -196,7 +218,7 @@ public class DitherClipHandle : MonoBehaviour
         }
     }
 
-    public void FadeToClip(DitherClipTransition transition)
+    public void FadeToClip(DitherClip transition)
     {
         nextClipPlayable = AnimationClipPlayable.Create(graph, transition.clip);
         nextClipPlayable.SetDuration(transition.clip.length);
@@ -239,7 +261,7 @@ public class DitherClipHandle : MonoBehaviour
         mixer.SetInputWeight(1, 0f);
     }
     
-    public void FadeFromClip(DitherClipTransition transition)
+    public void FadeFromClip(DitherClip transition)
     {
         // we're fading FROM the current clip.
         //.. next-clip should be run from the start.

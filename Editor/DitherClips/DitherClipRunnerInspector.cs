@@ -34,9 +34,9 @@ public class DitherClipRunnerInspector : Editor
         using (new GUILayout.VerticalScope(EditorStyles.helpBox))
         {
             EditorGUILayout.LabelField("CLIPS:", EditorStyles.boldLabel);
-            for (int i = 0; i < runner.DitherClipTransitions.Count; i++)
+            for (int i = 0; i < runner.DitherClips.Count; i++)
             {
-                var ditherClip = runner.DitherClipTransitions[i];
+                var ditherClip = runner.DitherClips[i];
                 if (ditherClip == null)
                     continue;
                 
@@ -62,34 +62,36 @@ public class DitherClipRunnerInspector : Editor
                 var yarnCall = runner.DitherClipYarnCalls[i];
                 if (yarnCall == null)
                     continue;
-
-                if (yarnCall.clipName == "")
-                    continue;
-
-                if (!DitherClipPicker.clipLookup.TryGetValue(yarnCall.clipName, out var clip))
-                    continue;
-
-                DitherClipTransitionConfig curves = null;
-                if(DitherClipPicker.curveLookup.TryGetValue(yarnCall.curveName, out var value))
-                    curves = value;
+                //
+                // if (yarnCall.clipName == "")
+                //     continue;
+                //
+                // if (!DitherClipPicker.clipLookup.TryGetValue(yarnCall.clipName, out var clip))
+                //     continue;
+                //
+                // DitherClipTransition curves = null;
+                // if(DitherClipPicker.curveLookup.TryGetValue(yarnCall.curveName, out var value))
+                //     curves = value;
                 
                 using (new GUILayout.HorizontalScope(EditorStyles.helpBox))
                 {
                     if (GUILayout.Button(playFromStart, GUILayout.Width(buttonWidth)))
                     {
-                        if (yarnCall.transitionDuration > 0f)
-                        {
-                            runner.CrossFade(clip, yarnCall.transitionDuration, curves);
-                        }
-                        else
-                        {
-                            runner.CrossFade(clip, curves: curves);
-                        }
+                        runner.CrossFade(yarnCall.clipName, yarnCall.durationName, yarnCall.curveName);
+                        
+                        // if (yarnCall.transitionDuration > 0f)
+                        // {
+                        //     runner.CrossFade(clip, yarnCall.transitionDuration, curves);
+                        // }
+                        // else
+                        // {
+                        //     runner.CrossFade(clip, curves: curves);
+                        // }
 
                         if(runner.logDebug)
-                            Debug.LogWarning($"Transitioning to: {clip.name}");
+                            Debug.LogWarning($"Transitioning to: {yarnCall.clipName}");
                     }
-                    EditorGUILayout.LabelField(clip.name);
+                    EditorGUILayout.LabelField(yarnCall.clipName);
                 }
             }
         }

@@ -20,7 +20,7 @@ public class DitherClipAssetProcessor// : AssetModificationProcessor
         // Delay call so Unity finishes creating the asset before we touch it
         EditorApplication.delayCall += () =>
         {
-            var asset = AssetDatabase.LoadAssetAtPath<DitherClipTransition>(path);
+            var asset = AssetDatabase.LoadAssetAtPath<DitherClip>(path);
             if (asset == null) 
                 return;
 
@@ -30,7 +30,7 @@ public class DitherClipAssetProcessor// : AssetModificationProcessor
                 string assetPath = AssetDatabase.GUIDToAssetPath(guid);
                 var p = AssetDatabase.LoadAssetAtPath<Preset>(assetPath);
                 
-                if(p.GetTargetTypeName() == typeof(DitherClipTransition).Name)
+                if(p.GetTargetTypeName() == typeof(DitherClip).Name)
                     Debug.LogWarning("Found preset for ghostClipTransition");
                 
                 if (p != null && p.CanBeAppliedTo(asset))
@@ -41,7 +41,7 @@ public class DitherClipAssetProcessor// : AssetModificationProcessor
                 }
             }
             
-            if (asset is DitherClipTransition transition)
+            if (asset is DitherClip transition)
             {
                 Debug.LogWarning("... was a ghostclipTransition!");
                 

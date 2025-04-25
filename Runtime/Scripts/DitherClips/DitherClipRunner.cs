@@ -9,32 +9,47 @@ public class DitherClipRunner : MonoBehaviour
 {
     private const float defaultTransitionDuration = 1.2f;
     
-    [Header("DEBUG:")] public bool logDebug;
+    [Header("DEBUG:")] 
+    public bool logDebug;
 
+    
     [Header("STATE:")] 
-    public DitherClipTransition currTransition;
-    public DitherClipTransition queuedTransition;
+    public float currBlendTimer;
     
-    [Header("CLIPS:")] 
+    public float currBlendDuration;
+
+    
+    [Header("CONFIG:")] 
     public AnimationClip idleClip;
-    public List<DitherClipTransition> DitherClipTransitions = new List<DitherClipTransition>();
+
+    public DitherClip idleAdditiveClip;
     
-    [Header("CONFIG:")]
-    public DirectorUpdateMode updateMode = DirectorUpdateMode.GameTime;
+    public DitherClipTransition defaultCurves;
     
-    [Header("YARN:")]
+    [Expandable] public DitherClipCollection ditherClipCollection;
+
+    [Expandable] public DitherClipCurveCollection ditherCurvesCollection;
+    
+    [FormerlySerializedAs("DitherClipTransitions")]
+    public List<DitherClip> DitherClips = new List<DitherClip>();
+    
     public List<DitherClipYarnCall> DitherClipYarnCalls = new List<DitherClipYarnCall>();
 
+    
     [Header("MATERIALS:")]
     public string shaderPropName = "_Opacity";
 
-
-    public float currBlendTimer;
-    public float currBlendDuration;
     
+    private Dictionary<string, AnimationClip> clipLookup = new Dictionary<string, AnimationClip>();
+    private Dictionary<string, DitherClipTransition> curvesLookup = new Dictionary<string, DitherClipTransition>();
     
-    public DitherClipHandle fromClipHandle;
-    public DitherClipHandle toClipHandle;
+    private AnimationClip queuedClip;
+    private float queuedTransitionDuration;
+    private DitherClipTransition queuedTransition;
+    public DitherClipTransition overrideCurves { get; private set; }
+    
+    private DitherClipHandle fromClipHandle;
+    private DitherClipHandle toClipHandle;
     
     private Animator fromAnimator;
     
@@ -44,6 +59,10 @@ public class DitherClipRunner : MonoBehaviour
 
     private AnimationClipPlayable currClipPlayable;
     private AnimationClipPlayable nextClipPlayable;
+
+    public DitherClip currDitherClip { get; private set; }
+    private AnimationClip currClip;
+    private DitherClip queuedDitherClip;
 
     [HideInInspector] public bool isGhost { get; set; }
     
@@ -84,6 +103,20 @@ public class DitherClipRunner : MonoBehaviour
 
         currBlendTimer = -1f;
         currBlendDuration = -1f;
+
+        if (ditherClipCollection != null)
+        {
+            clipLookup.Clear();
+            foreach(var ditherClip in ditherClipCollection.clips)
+                clipLookup.Add(ditherClip.name, ditherClip.clip);
+        }
+        
+        if (ditherCurvesCollection != null)
+        {
+            curvesLookup.Clear();
+            foreach(var ditherCurves in ditherCurvesCollection.curves)
+                curvesLookup.Add(ditherCurves.name, ditherCurves);
+        }
     }
     
     void Update()
@@ -94,7 +127,7 @@ public class DitherClipRunner : MonoBehaviour
         currBlendTimer -= Time.deltaTime;
 
         if (
-            (currClip != null || currTransition != null )
+            (currClip != null || currDitherClip != null )
             && currBlendTimer <= 0f
             )
         {
@@ -106,7 +139,7 @@ public class DitherClipRunner : MonoBehaviour
             currBlendDuration = -1f;
 
             currClip = null;
-            currTransition = null;
+            currDitherClip = null;
             overrideCurves = null;
             
             if (queuedClip != null)
@@ -115,15 +148,15 @@ public class DitherClipRunner : MonoBehaviour
                 if(queuedTransitionDuration > 0f)
                     transitionTime = queuedTransitionDuration;
 
-                DitherClipTransitionConfig transitionConfig = defaultCurves;
-                if(queuedTransitionConfig != null)
-                    transitionConfig = queuedTransitionConfig;
+                DitherClipTransition transition = defaultCurves;
+                if(queuedTransition != null)
+                    transition = queuedTransition;
                 
-                CrossFade(queuedClip, transitionTime, transitionConfig);
+                CrossFade(queuedClip, transitionTime, transition);
 
                 queuedTransitionDuration = -1f;
                 queuedClip = null;
-                queuedTransitionConfig = null;
+                queuedTransition = null;
             }
             
             // if (queuedTransition != null)
@@ -143,19 +176,83 @@ public class DitherClipRunner : MonoBehaviour
     }
 
 
-    [Header("TEMP:")]
-    public AnimationClip currClip;
-    public DitherClipTransitionConfig defaultCurves;
-    public DitherClipTransitionConfig overrideCurves;
+    public void CrossFade(string clipName, string durationName = "", string curvesName = "")
+    {
+        if (!clipLookup.TryGetValue(clipName, out var clip))
+        {
+            Debug.LogWarning($"... couldn't find clip '{clipName}' in runner '{gameObject.name}'s collection.", this.gameObject);
+            if(DitherClipPicker.clipLookup.TryGetValue(clipName, out clip))
+                Debug.LogWarning("... but found it in the master clip list.");
+            else
+                return;
+        }
+
+        float duration = defaultTransitionDuration;
+        if (
+            durationName != ""
+            && DitherClipPicker.durationLookup.TryGetValue(durationName, out var foundDuration)
+        )
+        {
+            duration = foundDuration.Value;
+            Debug.LogWarning("... found duration in the master durations list.");
+        }
+        
+        if (
+            curvesName != ""
+            && !curvesLookup.TryGetValue(curvesName, out var curves)
+        )
+        {
+            Debug.LogWarning($"... couldn't find curves '{curvesName}' in runner '{gameObject.name}'s collection.", this.gameObject);
+            if(DitherClipPicker.curveLookup.TryGetValue(curvesName, out var curve))
+                Debug.LogWarning("... but found it in the master curves list.");
+        }
+        else
+        {
+            curves = defaultCurves;
+        }
+        
+        CrossFade(clip, duration, curves);
+    }
     
-    public AnimationClip queuedClip;
-    public float queuedTransitionDuration;
-    public DitherClipTransitionConfig queuedTransitionConfig;
+    public void CrossFade(
+        string clipName,
+        float duration = defaultTransitionDuration,
+        string curvesName = ""
+        )
+    {
+        if (!clipLookup.TryGetValue(clipName, out var clip))
+        {
+            Debug.LogWarning($"... couldn't find clip '{clipName}' in runner '{gameObject.name}'s collection.", this.gameObject);
+            if(DitherClipPicker.clipLookup.TryGetValue(clipName, out clip))
+                Debug.LogWarning("... but found it in the master clip list.");
+            else
+                return;
+        }
+
+        if (
+            curvesName != ""
+            && !curvesLookup.TryGetValue(curvesName, out var curves)
+            )
+        {
+            Debug.LogWarning($"... couldn't find curves '{curvesName}' in runner '{gameObject.name}'s collection.", this.gameObject);
+            if(DitherClipPicker.curveLookup.TryGetValue(curvesName, out var curve))
+                Debug.LogWarning("... but found it in the master curves list.");
+        }
+        else
+        {
+            curves = defaultCurves;
+        }
+        
+        if(duration <= 0)
+            duration = defaultTransitionDuration;
+        
+        CrossFade(clip, duration, curves);
+    }
     
     public void CrossFade(
         AnimationClip clip, 
         float duration = defaultTransitionDuration,
-        DitherClipTransitionConfig curves = null
+        DitherClipTransition curves = null
         )
     {
         if (clip == currClip)
@@ -169,7 +266,7 @@ public class DitherClipRunner : MonoBehaviour
             Debug.LogWarning("already transitioning, queuing next instead.");
             queuedClip = clip;
             queuedTransitionDuration = duration;
-            queuedTransitionConfig = curves;
+            queuedTransition = curves;
             return;
         }
 
@@ -181,24 +278,19 @@ public class DitherClipRunner : MonoBehaviour
         toClipHandle.FadeToClip_NEW(clip);
     }
     
-    public void TransitionToDitherClip(DitherClipTransition transition)
+    public void TransitionToDitherClip(DitherClip transition)
     {
-        if (transition == currTransition)
+        if (transition == currDitherClip)
             return;
         
-        if (currTransition != null)
+        if (currDitherClip != null)
         {
-            // if (queuedTransition != transition)
-            // {
-            //     
-            // }
-            
             Debug.LogWarning("already transitioning, queueing next instead.");
-            queuedTransition = transition;
+            queuedDitherClip = transition;
             return;
         }
         
-        currTransition = transition;
+        currDitherClip = transition;
         currBlendTimer = transition.duration;
         currBlendDuration = transition.duration;
         
