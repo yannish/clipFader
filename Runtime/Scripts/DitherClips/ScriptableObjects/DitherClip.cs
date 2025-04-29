@@ -23,18 +23,22 @@ public class DitherClip : ScriptableObject
     private void OnValidate()
     {
         #if UNITY_EDITOR
-        if (isAdditive && referencePoseClip != null)
+        if (clip != null)
         {
-            // Debug.LogWarning(".. set ref pose clip.");
-            AnimationUtility.SetAdditiveReferencePose(clip, referencePoseClip, referencePoseTime);
-        }
-        else
-        {
-            // Debug.LogWarning(".. unset ref pose clip.");
-            AnimationClipSettings settings = AnimationUtility.GetAnimationClipSettings(clip);
-            settings.hasAdditiveReferencePose = false;
-            settings.additiveReferencePoseClip = null;
-            AnimationUtility.SetAnimationClipSettings(clip, settings);
+            if (isAdditive && referencePoseClip != null)
+            {
+                // Debug.LogWarning(".. set ref pose clip.");
+                AnimationUtility.SetAdditiveReferencePose(clip, referencePoseClip, referencePoseTime);
+            }
+            else
+            {
+
+                // Debug.LogWarning(".. unset ref pose clip.");
+                AnimationClipSettings settings = AnimationUtility.GetAnimationClipSettings(clip);
+                settings.hasAdditiveReferencePose = false;
+                settings.additiveReferencePoseClip = null;
+                AnimationUtility.SetAnimationClipSettings(clip, settings);
+            }
         }
         #endif
     }

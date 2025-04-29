@@ -10,9 +10,9 @@ public class DitherClipAssetPostProcessor : AssetPostprocessor
         string[] movedFromAssetPaths
         )
     {
-        Debug.LogWarning("Post processing assets.");
-        DitherClipPicker.RefreshDitherClipMasterlist();
-        DitherClipPicker.RefreshDitherClipCurvesMasterList();
-        DitherClipPicker.RefreshDitherClipDurationMasterList();
+        // Debug.LogWarning("Post processing assets.");
+        // DitherClipPicker.RefreshDitherClipMasterlist();
+        // DitherClipPicker.RefreshDitherClipCurvesMasterList();
+        // DitherClipPicker.RefreshDitherClipDurationMasterList();
     }
 }

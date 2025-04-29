@@ -14,4 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clip: {fileID: 7400000, guid: 50f5ec795fd58f34693af40d19a0bab5, type: 2}
   duration: 0.5
+  startTime: 1
+  isAdditive: 0
+  referencePoseClip: {fileID: 0}
+  referencePoseTime: 0
   config: {fileID: 11400000, guid: dec4526780f03764da40c9e28cd768ef, type: 2}
