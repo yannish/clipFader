@@ -69,8 +69,32 @@ public class DitherClipCreationUtil
     static void CreateDitherClipCollection()
     {
         Debug.LogWarning("Creating ditherclip collection from other ditherclips.");
+        var selectedDitherClips = Selection.GetFiltered(typeof(DitherClip), SelectionMode.Assets);
+        if (selectedDitherClips.Length == 0)
+            return;
+
+
+        DitherClipCollection ditherClipCollection = ScriptableObject.CreateInstance<DitherClipCollection>();
+        
+        string path = AssetDatabase.GetAssetPath(selectedDitherClips[0]);
+        string directory = Path.GetDirectoryName(path);
+        string fileName = "newClipCollection.asset";
+        string fullPath = Path.Combine(directory, fileName);
+        
+        foreach (var selectedDitherClip in selectedDitherClips)
+        {
+            if (selectedDitherClip is DitherClip ditherClip)
+            {
+                ditherClipCollection.clips.Add(ditherClip);
+            }
+        }
+        
+        AssetDatabase.CreateAsset(ditherClipCollection, fullPath);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+        EditorUtility.FocusProjectWindow();
+        Selection.activeObject = ditherClipCollection;
     }
-    
     
     
     private const string CreateDitherClipCollectionFromAnimationClipsDisplayName = "AnimationClip(s) >>> DitherClipCollection";

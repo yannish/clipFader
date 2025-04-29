@@ -1,4 +1,3 @@
-using Codice.CM.Common.Checkin.Partial;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;

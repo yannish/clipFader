@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Mono.Cecil;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -52,9 +50,6 @@ public static class DitherClipPicker
         
         #if UNITY_EDITOR
         Refresh();
-        // RefreshDitherClipMasterlist();
-        // RefreshDitherClipCurvesMasterList();
-        // RefreshDitherClipDurationMasterList();
         #endif
         
         allDitherClips = Resources.Load(
@@ -80,16 +75,36 @@ public static class DitherClipPicker
         {
             if (ditherClip.clip == null)
                 continue;
+
+            if (clipLookup.ContainsKey(ditherClip.clip.name))
+            {
+                Debug.LogWarning($"Already contained a clip by the name: {ditherClip.clip.name}");
+                continue;
+            }
             
             clipLookup.Add(ditherClip.name, ditherClip.clip);
             Debug.LogWarning($"adding clip {ditherClip.name} to lookup.");
         }
 
         foreach (var ditherCurve in allDitherClipCurves.curves)
+        {
+            if (curveLookup.ContainsKey(ditherCurve.name))
+            {
+                Debug.LogWarning($"Already contained curve by the name: {ditherCurve.name}");
+                continue;
+            }
             curveLookup.Add(ditherCurve.name, ditherCurve);
+        }
 
         foreach (var duration in allDitherClipDurations.durations)
+        {
+            if (durationLookup.ContainsKey(duration.name))
+            {
+                Debug.LogWarning($"Already contained a duration by the name: {duration.name}");
+                continue;
+            }
             durationLookup.Add(duration.name, duration);
+        }
     }
 
     public static void RefreshAllDitherClipResources()
@@ -102,71 +117,127 @@ public static class DitherClipPicker
     }
     
     #if UNITY_EDITOR
+    // [MenuItem("Tools/DitherClips/Check Folder Structure")]
+    public static void CheckFolderStructure()
+    {
+        var otherFolders = AssetDatabase.GetSubFolders($"{path}/{folderName}");
+        Debug.LogWarning("Sub folders in dither:");
+        foreach (var folder in otherFolders)
+        {
+            Debug.Log(folder);
+        }
+    }
+    #endif
+    
+    #if UNITY_EDITOR
+    [MenuItem("Tools/DitherClips/Refresh DitherClip Caches")]
     public static void Refresh()
     {
-        //... CLIPS:
-        var masterList = ScriptableObject.CreateInstance<DitherClipCollection>();
-
-        var allDitherClipsGUIDs = AssetDatabase.FindAssets("t: DitherClip");
-        foreach (var guid in allDitherClipsGUIDs)
-        {
-            var path = AssetDatabase.GUIDToAssetPath(guid);
-            var asset = AssetDatabase.LoadAssetAtPath<DitherClip>(path);
-            masterList.clips.Add(asset);
-        }
+        Debug.LogWarning("Refreshing dither clip master lists...");
         
         if(!AssetDatabase.IsValidFolder(path))
             AssetDatabase.CreateFolder("Assets", "Resources");
         
         if(!AssetDatabase.IsValidFolder($"{path}/{folderName}"))
             AssetDatabase.CreateFolder(path, folderName);
+
         
-        AssetDatabase.DeleteAsset($"{path}/{folderName}/{clipsAssetName}.asset");
-        AssetDatabase.CreateAsset(masterList, $"{path}/{folderName}/{clipsAssetName}.asset");
+        //... CLIPS:
+        var foundClipCollection = AssetDatabase.LoadAssetAtPath(
+            $"{path}/{folderName}/{clipsAssetName}.asset",
+            typeof(DitherClipCollection)
+        ) as DitherClipCollection;
+
+        if (!foundClipCollection)
+        {
+            foundClipCollection = ScriptableObject.CreateInstance<DitherClipCollection>();
+            AssetDatabase.CreateAsset(foundClipCollection, $"{path}/{folderName}/{clipsAssetName}.asset");
+        }
+        // else
+        //     foundClipCollection.clips.Clear();
+        //
+        // var allDitherClipsGUIDs = AssetDatabase.FindAssets("t: DitherClip");
+        // foreach (var guid in allDitherClipsGUIDs)
+        // {
+        //     var path = AssetDatabase.GUIDToAssetPath(guid);
+        //     var asset = AssetDatabase.LoadAssetAtPath<DitherClip>(path);
+        //     foundClipCollection.clips.Add(asset);
+        // }
+        
+        // AssetDatabase.DeleteAsset($"{path}/{folderName}/{clipsAssetName}.asset");
         
         
         //... CURVES:
-        var masterCurvesList = ScriptableObject.CreateInstance<DitherClipCurveCollection>();
+        var foundCurvesCollection = AssetDatabase.LoadAssetAtPath(
+            $"{path}/{folderName}/{curvesAssetname}.asset",
+            typeof(DitherClipCurveCollection)
+        ) as DitherClipCurveCollection;
 
-        var allDitherClipCurveGUIDs = AssetDatabase.FindAssets("t: DitherClipTransition");
-        foreach (var guid in allDitherClipCurveGUIDs)
+        if (!foundCurvesCollection)
         {
-            var path = AssetDatabase.GUIDToAssetPath(guid);
-            var asset = AssetDatabase.LoadAssetAtPath<DitherClipTransition>(path);
-            masterCurvesList.curves.Add(asset);
+            foundCurvesCollection = ScriptableObject.CreateInstance<DitherClipCurveCollection>();
+            AssetDatabase.CreateAsset(foundCurvesCollection, $"{path}/{folderName}/{curvesAssetname}.asset");
         }
+        // else
+        //     foundCurvesCollection.curves.Clear();
         
-        if(!AssetDatabase.IsValidFolder(path))
-            AssetDatabase.CreateFolder("Assets", "Resources");
+        // var allDitherClipCurveGUIDs = AssetDatabase.FindAssets("t: DitherClipTransition");
+        // foreach (var guid in allDitherClipCurveGUIDs)
+        // {
+        //     var path = AssetDatabase.GUIDToAssetPath(guid);
+        //     var asset = AssetDatabase.LoadAssetAtPath<DitherClipTransition>(path);
+        //     foundCurvesCollection.curves.Add(asset);
+        // }
         
-        if(!AssetDatabase.IsValidFolder($"{path}/{folderName}"))
-            AssetDatabase.CreateFolder(path, folderName);
-        
-        AssetDatabase.DeleteAsset($"{path}/{folderName}/{curvesAssetname}.asset");
-        AssetDatabase.CreateAsset(masterCurvesList, $"{path}/{folderName}/{curvesAssetname}.asset");
+        // if(!AssetDatabase.IsValidFolder(path))
+        //     AssetDatabase.CreateFolder("Assets", "Resources");
+        //
+        // if(!AssetDatabase.IsValidFolder($"{path}/{folderName}"))
+        //     AssetDatabase.CreateFolder(path, folderName);
+
+       
+        // AssetDatabase.DeleteAsset($"{path}/{folderName}/{curvesAssetname}.asset");
         
         
         //... DURATIONS:
-        var masterDurationsList = ScriptableObject.CreateInstance<DitherClipDurationCollection>();
+        var foundDurationCollection = AssetDatabase.LoadAssetAtPath(
+            $"{path}/{folderName}/{durationsAssetname}.asset",
+            typeof(DitherClipDurationCollection)
+        ) as DitherClipDurationCollection;
 
-        var allDitherDurationsGUIDs = AssetDatabase.FindAssets($"t: FloatVariable l: {ditherLabelName}");
-        foreach (var guid in allDitherDurationsGUIDs)
+        if (!foundDurationCollection)
         {
-            var path = AssetDatabase.GUIDToAssetPath(guid);
-            var asset = AssetDatabase.LoadAssetAtPath<FloatVariable>(path);
-            masterDurationsList.durations.Add(asset);
+            foundDurationCollection = ScriptableObject.CreateInstance<DitherClipDurationCollection>();
+            AssetDatabase.CreateAsset(foundDurationCollection, $"{path}/{folderName}/{durationsAssetname}.asset");
         }
+        // else
+        // {
+        //     foundDurationCollection.durations.Clear();
+        // }
+        //
+        // var allDitherDurationsGUIDs = AssetDatabase.FindAssets($"t: FloatVariable");
+        // // var allDitherDurationsGUIDs = AssetDatabase.FindAssets($"t: FloatVariable l: {ditherLabelName}");
+        // foreach (var guid in allDitherDurationsGUIDs)
+        // {
+        //     var path = AssetDatabase.GUIDToAssetPath(guid);
+        //     var asset = AssetDatabase.LoadAssetAtPath<FloatVariable>(path) as FloatVariable;
+        //     if (asset && asset.DeveloperDescription.Contains("dither"))
+        //     {
+        //         foundDurationCollection.durations.Add(asset);
+        //     }
+        // }
         
-        if(!AssetDatabase.IsValidFolder(path))
-            AssetDatabase.CreateFolder("Assets", "Resources");
-        
-        if(!AssetDatabase.IsValidFolder($"{path}/{folderName}"))
-            AssetDatabase.CreateFolder(path, folderName);
-        
-        AssetDatabase.DeleteAsset($"{path}/{folderName}/{durationsAssetname}.asset");
-        AssetDatabase.CreateAsset(masterDurationsList, $"{path}/{folderName}/{durationsAssetname}.asset");
-        
-        
+        // if(!AssetDatabase.IsValidFolder(path))
+        //     AssetDatabase.CreateFolder("Assets", "Resources");
+        //
+        // if(!AssetDatabase.IsValidFolder($"{path}/{folderName}"))
+        //     AssetDatabase.CreateFolder(path, folderName);
+
+        // AssetDatabase.DeleteAsset($"{path}/{folderName}/{durationsAssetname}.asset");
+        // EditorUtility.SetDirty(foundDurations);
+        EditorUtility.SetDirty(foundClipCollection);
+        EditorUtility.SetDirty(foundCurvesCollection);
+        EditorUtility.SetDirty(foundDurationCollection);
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
     }
@@ -174,8 +245,8 @@ public static class DitherClipPicker
     
     
     #if UNITY_EDITOR
-    [MenuItem("Tools/DitherClips/Generate DitherClips master list")]
-    [InitializeOnLoadMethod]
+    // [MenuItem("Tools/DitherClips/Generate DitherClips master list")]
+    // [InitializeOnLoadMethod]
     public static void RefreshDitherClipMasterlist()
     {
         // Debug.LogWarning("Refreshing dither clip masterlist.");
@@ -203,8 +274,8 @@ public static class DitherClipPicker
         AssetDatabase.Refresh();
     }
 
-    [MenuItem("Tools/DitherClips/Generate DitherClipCurves master list")]
-    [InitializeOnLoadMethod]
+    // [MenuItem("Tools/DitherClips/Generate DitherClipCurves master list")]
+    // [InitializeOnLoadMethod]
     public static void RefreshDitherClipCurvesMasterList()
     {
         // Debug.LogWarning("Creating dither clip curves masterlist.");
@@ -231,8 +302,8 @@ public static class DitherClipPicker
         AssetDatabase.Refresh();
     }
     
-    [MenuItem("Tools/DitherClips/Generate DitherClipDurations master list")]
-    [InitializeOnLoadMethod]
+    // [MenuItem("Tools/DitherClips/Generate DitherClipDurations master list")]
+    // [InitializeOnLoadMethod]
     public static void RefreshDitherClipDurationMasterList()
     {
         // Debug.LogWarning("Creating dither clip durations masterlist.");
