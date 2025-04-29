@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98e529d13f154eb47b94a354ec85bc42, type: 3}
   m_Name: default
   m_EditorClassIdentifier: 
-  DeveloperDescription: 
+  DeveloperDescription: dither
   Value: 1
