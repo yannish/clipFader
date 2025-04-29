@@ -959,15 +959,15 @@ MonoBehaviour:
   - clipName: lookAtAnnie
     durationName: default
     transitionDuration: 0
-    curveName: gentlerDitherTransition
+    curveName: gentle
   - clipName: lookAtOwl
     durationName: quick
     transitionDuration: 0
-    curveName: 
+    curveName: default
   - clipName: thinking
     durationName: slow
     transitionDuration: 0
-    curveName: 
+    curveName: default
   shaderPropName: _Opacity
 --- !u!1001 &1322049478
 PrefabInstance:

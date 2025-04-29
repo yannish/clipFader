@@ -7,7 +7,7 @@ using UnityEngine.Serialization;
 
 public class DitherClipRunner : MonoBehaviour
 {
-    private const float defaultTransitionDuration = 1.2f;
+    private const float defaultDuration = 1.2f;
     
     [Header("DEBUG:")] 
     public bool logDebug;
@@ -40,7 +40,7 @@ public class DitherClipRunner : MonoBehaviour
     public string shaderPropName = "_Opacity";
 
     
-    private Dictionary<string, AnimationClip> clipLookup = new Dictionary<string, AnimationClip>();
+    private Dictionary<string, AnimationClip> localClipLookup = new Dictionary<string, AnimationClip>();
     private Dictionary<string, DitherClipTransition> curvesLookup = new Dictionary<string, DitherClipTransition>();
     
     private AnimationClip queuedClip;
@@ -106,9 +106,9 @@ public class DitherClipRunner : MonoBehaviour
 
         if (ditherClipCollection != null)
         {
-            clipLookup.Clear();
+            localClipLookup.Clear();
             foreach(var ditherClip in ditherClipCollection.clips)
-                clipLookup.Add(ditherClip.name, ditherClip.clip);
+                localClipLookup.Add(ditherClip.name, ditherClip.clip);
         }
         
         if (ditherCurvesCollection != null)
@@ -144,7 +144,7 @@ public class DitherClipRunner : MonoBehaviour
             
             if (queuedClip != null)
             {
-                float transitionTime = defaultTransitionDuration;
+                float transitionTime = defaultDuration;
                 if(queuedTransitionDuration > 0f)
                     transitionTime = queuedTransitionDuration;
 
@@ -178,16 +178,16 @@ public class DitherClipRunner : MonoBehaviour
 
     public void CrossFade(string clipName, string durationName = "", string curvesName = "")
     {
-        if (!clipLookup.TryGetValue(clipName, out var clip))
+        if (!localClipLookup.TryGetValue(clipName, out var clip))
         {
             Debug.LogWarning($"... couldn't find clip '{clipName}' in runner '{gameObject.name}'s collection.", this.gameObject);
-            if(DitherClipPicker.clipLookup.TryGetValue(clipName, out clip))
-                Debug.LogWarning("... but found it in the master clip list.");
-            else
+            // if(DitherClipPicker.clipLookup.TryGetValue(clipName, out clip))
+                // Debug.LogWarning("... but found it in the master clip list.");
+            // else
                 return;
         }
 
-        float duration = defaultTransitionDuration;
+        float duration = defaultDuration;
         if (
             durationName != ""
             && DitherClipPicker.durationLookup.TryGetValue(durationName, out var foundDuration)
@@ -214,18 +214,14 @@ public class DitherClipRunner : MonoBehaviour
         CrossFade(clip, duration, curves);
     }
     
-    public void CrossFade(
-        string clipName,
-        float duration = defaultTransitionDuration,
-        string curvesName = ""
-        )
+    public void CrossFade(string clipName, float duration = defaultDuration, string curvesName = "")
     {
-        if (!clipLookup.TryGetValue(clipName, out var clip))
+        if (!localClipLookup.TryGetValue(clipName, out var clip))
         {
             Debug.LogWarning($"... couldn't find clip '{clipName}' in runner '{gameObject.name}'s collection.", this.gameObject);
-            if(DitherClipPicker.clipLookup.TryGetValue(clipName, out clip))
-                Debug.LogWarning("... but found it in the master clip list.");
-            else
+            // if(DitherClipPicker.clipLookup.TryGetValue(clipName, out clip))
+            //     Debug.LogWarning("... but found it in the master clip list.");
+            // else
                 return;
         }
 
@@ -244,16 +240,12 @@ public class DitherClipRunner : MonoBehaviour
         }
         
         if(duration <= 0)
-            duration = defaultTransitionDuration;
+            duration = defaultDuration;
         
         CrossFade(clip, duration, curves);
     }
     
-    public void CrossFade(
-        AnimationClip clip, 
-        float duration = defaultTransitionDuration,
-        DitherClipTransition curves = null
-        )
+    public void CrossFade(AnimationClip clip, float duration = defaultDuration, DitherClipTransition curves = null)
     {
         if (clip == currClip)
             return;

@@ -16,7 +16,7 @@ using UnityEditor;
  */
 
 
-public class DitherClipAssetModificationProcessor : AssetModificationProcessor
+public class DitherClipAssetModificationProcessor// : AssetModificationProcessor
 {
     private static AssetDeleteResult OnWillDeleteAsset(string path, RemoveAssetOptions options)
     {
