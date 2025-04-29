@@ -81,6 +81,12 @@ public static class DitherClipPicker
         {
             if (ditherClip.clip == null)
                 continue;
+
+            if (clipLookup.ContainsKey(ditherClip.clip.name))
+            {
+                Debug.LogWarning($"Already contained a clip by the name: {ditherClip.clip.name}");
+                continue;
+            }
             
             clipLookup.Add(ditherClip.name, ditherClip.clip);
             Debug.LogWarning($"adding clip {ditherClip.name} to lookup.");
