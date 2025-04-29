@@ -117,6 +117,19 @@ public static class DitherClipPicker
     }
     
     #if UNITY_EDITOR
+    // [MenuItem("Tools/DitherClips/Check Folder Structure")]
+    public static void CheckFolderStructure()
+    {
+        var otherFolders = AssetDatabase.GetSubFolders($"{path}/{folderName}");
+        Debug.LogWarning("Sub folders in dither:");
+        foreach (var folder in otherFolders)
+        {
+            Debug.Log(folder);
+        }
+    }
+    #endif
+    
+    #if UNITY_EDITOR
     [MenuItem("Tools/DitherClips/Refresh DitherClip Caches")]
     public static void Refresh()
     {
@@ -127,6 +140,7 @@ public static class DitherClipPicker
         
         if(!AssetDatabase.IsValidFolder($"{path}/{folderName}"))
             AssetDatabase.CreateFolder(path, folderName);
+
         
         //... CLIPS:
         var foundClipCollection = AssetDatabase.LoadAssetAtPath(
