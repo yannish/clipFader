@@ -95,7 +95,8 @@ public class DitherClipHandle : MonoBehaviour
     
     public void FinishFadeToClipBlending(DitherClipRunner runner)
     {
-        Debug.LogWarning("Fade TO clip DONE.");
+        if(runner.logDebug)
+            Debug.LogWarning("Fade TO clip DONE.");
         
         //... we were fading TO a clip, so we shut down.
         
@@ -155,7 +156,8 @@ public class DitherClipHandle : MonoBehaviour
 
     public void FinishFadeFromClipBlending(DitherClipRunner runner)
     {
-        Debug.LogWarning("Fade FROM clip DONE.");
+        if(runner.logDebug)
+            Debug.LogWarning("Fade FROM clip DONE.");
             
         //... this was fading OUT, so we smash to the last frame of next, 
             

@@ -1,5 +1,7 @@
 fileFormatVersion: 2
-guid: 858e34e227e25be4ab5b8ce95e9ea8d0
+guid: 29ef4aa242473114f9fba8a2b064f6d4
+labels:
+- Ditherclip
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 11400000

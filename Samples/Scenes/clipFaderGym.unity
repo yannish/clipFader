@@ -949,7 +949,7 @@ MonoBehaviour:
   idleClip: {fileID: 7400000, guid: 0b0bc8e68414db243a7ad5bf4472da42, type: 2}
   idleAdditiveClip: {fileID: 11400000, guid: b2818a8e5a0bb6d48945590bb0428180, type: 2}
   defaultCurves: {fileID: 11400000, guid: 3e9dfa6a6cb23f9439d577d180d54926, type: 2}
-  ditherClipCollection: {fileID: 11400000, guid: 07aa2e724be1997429c7994038dfaea9, type: 2}
+  ditherClipCollection: {fileID: 11400000, guid: 7440ec90af3426d43850412ea9081984, type: 2}
   ditherCurvesCollection: {fileID: 0}
   DitherClips:
   - {fileID: 11400000, guid: feb6aac59277d80478616e839113cf0a, type: 2}

@@ -68,8 +68,6 @@ public class DitherClipAssetModificationProcessor : AssetModificationProcessor
             //     DitherClipPicker.Refresh();
             // };
         }
-        
-        // // Delay call so Unity finishes creating the asset before we touch it
 
         return AssetDeleteResult.DidNotDelete;
     }
@@ -83,10 +81,9 @@ public class DitherClipAssetModificationProcessor : AssetModificationProcessor
     
     private static string[] OnWillSaveAssets(string[] paths)
     {
-        Debug.LogWarning($"Will be saving assets...");
+        // Debug.LogWarning($"Will be saving assets...");
 
         bool thereWasADitherClipAmongTheModifiedAssets = false;
-        Debug.LogWarning("... delayed action");
         foreach(var path in paths)
         {
             var asset = AssetDatabase.LoadAssetAtPath<DitherClip>(path);
@@ -95,12 +92,37 @@ public class DitherClipAssetModificationProcessor : AssetModificationProcessor
                 
             thereWasADitherClipAmongTheModifiedAssets = true;
         }
-        
-        foreach(var path in paths){}
 
-        if (thereWasADitherClipAmongTheModifiedAssets)
+        bool thereWasAFloatVariableAmongThoseSaved = false;
+        foreach (var path in paths)
         {
-            Debug.LogWarning("... a dither clip was saved!");
+            var floatVariable = AssetDatabase.LoadAssetAtPath<FloatVariable>(path);
+            if (floatVariable == null)
+                continue;
+
+            // if (!floatVariable.DeveloperDescription.Contains("dither"))
+            //     continue;
+                
+            thereWasAFloatVariableAmongThoseSaved = true;
+        }
+
+        bool thereWereDitherCurvesAmongThoseSaved = false;
+        foreach (var path in paths)
+        {
+            var ditherClipTransition = AssetDatabase.LoadAssetAtPath<DitherClipTransition>(path);
+            if (ditherClipTransition == null)
+                continue;
+            
+            thereWereDitherCurvesAmongThoseSaved = true;
+        }
+
+        if (
+            thereWasADitherClipAmongTheModifiedAssets 
+            || thereWasAFloatVariableAmongThoseSaved
+            || thereWereDitherCurvesAmongThoseSaved
+            )
+        {
+            Debug.LogWarning("... a dither clip or float variable was saved!");
             EditorApplication.delayCall += () =>
             {
                 DitherClipPicker.Refresh();
@@ -112,70 +134,26 @@ public class DitherClipAssetModificationProcessor : AssetModificationProcessor
     
     private static void OnWillCreateAsset(string path)
     {
-        // Debug.LogWarning($"Creating asset: {path}");
-
+        // Debug.LogWarning($" creating asset : {path}");
+        //
         if (path.EndsWith(".meta"))
             return;
         
-        // if (path.Contains(".meta"))
-            // return;
+        // Debug.LogWarning($"... not a meta file.");
         
-        // Only care about .asset files (and remove the .meta from the end)
-        // path = path.Replace(".meta", "");
-
         // Delay call so Unity finishes creating the asset before we touch it
         EditorApplication.delayCall += () =>
         {
             // Debug.LogWarning($"trying to load dither clip at {path}.");
             
-            var asset = AssetDatabase.LoadAssetAtPath<DitherClip>(path);
-            if (asset == null) 
-                return;
+            var ditherClipAsset = AssetDatabase.LoadAssetAtPath<DitherClip>(path);
+            var ditherClipTransitionAsset = AssetDatabase.LoadAssetAtPath<DitherClipTransition>(path);
 
-            Debug.LogWarning($"Dither clip was created.");
-            
-            // var presetGuids = AssetDatabase.FindAssets("t:Preset");
-            // foreach (string guid in presetGuids)
-            // {
-            //     string assetPath = AssetDatabase.GUIDToAssetPath(guid);
-            //     var p = AssetDatabase.LoadAssetAtPath<Preset>(assetPath);
-            //     
-            //     if(p.GetTargetTypeName() == typeof(DitherClip).Name)
-            //         Debug.LogWarning("Found preset for ghostClipTransition");
-            //     
-            //     if (p != null && p.CanBeAppliedTo(asset))
-            //     {
-            //         Debug.LogWarning("can apply preset!");
-            //         p.ApplyTo(asset);
-            //         break;
-            //     }
-            // }
-            //
-            // if (asset is DitherClip transition)
-            // {
-            //     Debug.LogWarning("... was a ghostclipTransition!");
-            //     
-            //     var preset = AssetDatabase.FindAssets("default t:GhostClipTransitionConfig").FirstOrDefault();
-            //     // Step 3: Apply it to your instance
-            //     if (preset != null)
-            //     {
-            //         
-            //     }
-            //
-            //     // Load preset
-            //     // var preset = AssetDatabase.LoadAssetAtPath<Preset>("Assets/Presets/MyThingSettingsPreset.preset");
-            //     // if (preset != null && preset.CanBeAppliedTo(asset))
-            //     // {
-            //     //     preset.ApplyTo(asset);
-            //     //     EditorUtility.SetDirty(asset);
-            //     //     AssetDatabase.SaveAssets();
-            //     //     Debug.Log($"Applied preset to new {nameof(GhostClipTransition)} at {path}");
-            //     // }
-            // }
-            // else
-            // {
-            //     Debug.LogWarning("... wasn't a ghostclipTransition though.");
-            // }
+            if (ditherClipAsset != null || ditherClipTransitionAsset != null)
+            {
+                Debug.LogWarning($"Dither asset was created.");
+                DitherClipPicker.Refresh();
+            }
         };
     }
 }
