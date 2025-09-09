@@ -43,7 +43,7 @@ public static class DitherClipPicker
     // }
     // #endif
     
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    // [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     public static void LoadMasterLists()
     {
         Debug.LogWarning("Loading dither clip master lists...");
